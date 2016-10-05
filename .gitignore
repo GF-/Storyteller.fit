@@ -5,6 +5,9 @@
 # Include README.md 
 !README.md
 
+# Include README.md 
+!README.md
+
 # Ignore Files
 /files/*
 
