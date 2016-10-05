@@ -1,1 +1,1 @@
-:-)
+Storyteller for STRAVA.com
