@@ -1,0 +1,5 @@
+name = Storyteller for Strava
+description = Custom functions Storyteller.fit
+core = 7.x
+# dependencies[] = strava_auth
+
