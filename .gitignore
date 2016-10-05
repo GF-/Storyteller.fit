@@ -1,0 +1,22 @@
+# Ignore files starting with dot but include this file (self) 
+.*
+!/.gitignore
+
+# Include README.md 
+!README.md
+
+# Ignore Files
+/files/*
+
+# Ignore any php scripts in this dir
+*.php
+
+# Now drive on all the way to include just some subfolders, "_custom" modules
+!/modules
+/modules/*
+!/modules/_custom/
+
+# Themes folder
+!/themes
+/themes/*
+!/themes/storyteller/

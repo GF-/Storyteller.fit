@@ -1,0 +1,551 @@
+<?php
+
+/**
+ * @file
+ * Storyteller strava module.
+ */
+
+use Drupal\strava_auth\Strava\Factory as StravaFactory;
+
+//namespace Drupal\Pest;
+//use Pest;
+
+// This is a default Access token and other properties for a gianfuffa@gmail.com Strava API
+define('STRAVA_API_DEFAULT_TOKEN', 'c6b807a4b6f0e7a3cad7800c0a321ca2a2c7b4b2');
+define('STRAVA_API_DEFAULT_SECRET', '66bb5ce1ed06771d70081e2265a66688619772c6');
+define('STRAVA_API_DEFAULT_ID', '12014');
+define('STRAVA_API_CALLBACK_URL', 'storyteller.fit');
+
+// Default Strava API URL
+define('STRAVA_API_URL', 'https://www.strava.com/api/v3/');
+// Define Strava API Webhooks URL
+define('STRAVA_API_WEBHOOK_URL', 'https://api.strava.com/api/v3/');
+
+/**
+ * Implementation of hook_init().
+ */
+function storyteller_strava_init() {
+  
+  $token = isset($_SESSION['strava_auth_token']) && !empty($_SESSION['strava_auth_token']) ? $_SESSION['strava_auth_token'] : STRAVA_API_DEFAULT_TOKEN;
+  $strava_api_data = isset($_SESSION['strava_api_data']) && !empty($_SESSION['strava_api_data']) ? $_SESSION['strava_api_data'] : array('token' => $token);
+  $strava_api_data['api_url'] = STRAVA_API_URL;
+  
+  // Add Athlete's data and token into JS settings array
+  drupal_add_js(array('strava_api_data' => $strava_api_data), 'setting'); //, JS_THEME);
+
+  /* 
+  // Experimental, trying to implement Strava API webhooks
+  $client_id = isset($strava_api_data['id']) ? $strava_api_data['id'] : variable_get('strava_auth_api_client_id', STRAVA_API_DEFAULT_ID); 
+  $client_secret = isset($strava_api_data['client_secret']) ? $strava_api_data['client_secret'] : variable_get('strava_auth_api_client_secret', STRAVA_API_DEFAULT_SECRET);
+  $callback_url = isset($strava_api_data['callback_url']) ? $strava_api_data['callback_url'] : STRAVA_API_CALLBACK_URL;
+  $headers = $oauth->headers;
+  //$headers = array('Authorization' => 'Bearer '. $token);
+  //$callback_url = $oauth->redirectUri;
+  $options = array(
+    'client_id' => $client_id,
+    'client_secret' => $client_secret,
+    'object_type' => 'activity',
+    'aspect_type' => 'create', 
+    'callback_url' => $callback_url, //'http://storyteller.fit/user', //$callback_url, //http://a-valid.com/url'
+    'verify_token' => $token, //=STRAVA'
+  );
+  storyteller_strava_webhooks('push_subscriptions', $options, $headers, $token);
+  */
+}
+
+/**
+ * Implementation of hook_views_post_execute().
+ */
+function storyteller_strava_views_post_execute(&$view) {
+  if ($view->name == 'stories') {
+    drupal_add_js(drupal_get_path('module', 'storyteller_strava').'/js/services.js');
+  }
+}
+
+/**
+ * The Strava user has logged in.
+ *
+ * @param object $user
+ *   The Drupal user object.
+ * @param object $details
+ *   Strava OAuth user details.
+ * @param object $token
+ *   Strava OAuth token object.
+ */                     
+function storyteller_strava_strava_auth_user_login($user, $details, $accessToken) {
+  global $base_url;
+
+  $token = $accessToken->accessToken;
+  // watchdog('StravaToken', '<pre>'. print_r($token, 1) .'</pre>');
+  //$token = 'c6b807a4b6f0e7a3cad7800c0a321ca2a2c7b4b2';
+  
+  if ($token && in_array("strava user", $user->roles)) {
+    // Import values from Strava to Profile2
+    // Load Profile2 user
+    $profile = profile2_load_by_user($user->uid, 'main');
+  
+    // if the profile does not exists already, then create it
+    if (!$profile) {
+      //  Creating new profile
+      // https://gix.my/blog/create-profile2-object-new-user-programatically
+      $profile = profile2_create(array('type' => 'main', 'uid' => $user->uid));
+    }
+      
+    // if the profile does not exists already, then create it
+    // if ( ! is_a( $profile, Profile ) ) {
+    //   $social_profile = profile_create(array('user' => $user, 'type' => 'social'));
+    // }
+    // $profile = profile_create(array('user' => $user->uid, 'type' => 'main'));
+    
+    // Import/update data from Strava to Profile2 fields
+    $profile->field_first_name[LANGUAGE_NONE][0]['value'] = $details->firstName;
+    $profile->field_last_name[LANGUAGE_NONE][0]['value'] = $details->lastName;
+    $profile->field_profile_image[LANGUAGE_NONE][0]['value'] = $details->imageUrl;
+    $profile->field_profile_description[LANGUAGE_NONE][0]['value'] = $details->description;
+
+    // WORKING
+    $factory = StravaFactory::getInstance(); //Drupal\storyteller\Strava\Factory::getInstance();
+    $api_client = $factory->getApiClient($token);
+
+    $athlete = $api_client->getAthlete();
+    
+    // $profile['main']->field_profile_description[LANGUAGE_NONE][0]['value'] = $activities;
+
+    // THROW ERROR and PRINT_R
+    // print '<pre>';
+    // print_r($profile);
+    // print '</pre>';
+    // break;
+    
+    // WORKING
+    // $profile['main']->field_profile_description[LANGUAGE_NONE][0]['value'] = $athlete['id'];
+
+    $activities = $api_client->getAthleteActivities();
+    
+    /*
+     foreach ((array)$details as $prop => $detail) {
+       $key = check_plain(str_replace('*', '', $prop));
+       //dpm($key);
+       $additional[$key] = $detail;
+     }     
+     */
+     $athlete['token'] = $token;
+     $_SESSION['strava_api_data'] = $athlete; //array_merge($athlete, (array)$additional);
+
+    // print '<pre>';
+    // print_r($athlete);
+    // print '</pre>';
+    $profile->field_strava_athlete_id[LANGUAGE_NONE][0]['value'] = $athlete['id'];
+    $profile->field_city[LANGUAGE_NONE][0]['value'] = $athlete['city'];
+    $profile->field_state[LANGUAGE_NONE][0]['value'] = $athlete['state'];
+    $profile->field_country[LANGUAGE_NONE][0]['value'] = $athlete['country'];
+    
+
+/*
+    foreach($activities as $key => $item){
+      dpm($item['name']);
+    }
+*/
+
+    // Save profile2 data
+    profile2_save($profile);
+   
+    // Redirection
+    // This is redirection without login on Strava externally (aka user was already logged in strava in browser)
+    $drupal_referer = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : $_SESSION['strava_auth_destination'];
+    if ($drupal_referer) {
+      $referer = str_replace($base_url, '', $drupal_referer);
+      $path = drupal_get_normal_path(ltrim($referer, '/')); 
+      $chunks = explode('/', $path);
+    
+      if (is_array($chunks)) {
+        if ($chunks[0] == 'node' && is_numeric($chunks[1])) {
+       
+        /* 
+        // A variation, uncomment and comment drupal_goto under if better filtering per node is needed or similar (i.e. only for story content type)
+        $node = node_load($chunks[1]);
+        if ($node->type == 'story') {
+          drupal_goto($path); 
+        }
+        else {
+          // Something else for other node types
+        }
+        */
+        
+          drupal_goto($path);
+        }
+        else {
+          drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
+        }
+      }
+      else {
+        drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
+      }
+    }
+  }
+}
+
+
+/**
+ * Page callback for Strava login.
+ */
+
+function storyteller_strava_form_alter(&$form, &$form_state, $form_id) {
+
+  global $user;
+
+  // The following applies only for role: 'strava user'
+  if (in_array('strava user', $user->roles)) {
+   
+    // only on node form: 'story'
+    if ($form_id == 'story_node_form') {
+
+
+  // ----------- Causing conflict with Field upload, to be checked
+
+      // $oauth = StravaFactory::getInstance()->getOauthClient();
+
+      // if (!isset($_GET['code'])) {
+      // //   // Server-side OAuth flow.
+      //   drupal_goto($oauth->getAuthorizationUrl(), array('external' => TRUE));
+      // }
+
+      // // // Retrieve a token using the access code.
+      // $token = $oauth->getAccessToken('authorization_code', array('code' => $_GET['code']));
+
+  // -----------
+
+
+      // Getting the token
+
+        // We need to get $token, which is stored and updated in $user->session;
+        // $user->session returns a string such storyteller_token|s:40:"token";
+
+        // extracting token
+
+/*
+      function getToken($sessionString,$delim){
+          // "foo a foo" becomes: array(""," a ","")
+          $sessionString = explode($delim, $sessionString, 3); // also, we only need 2 items at most
+          // we check whether the 2nd is set and return it, otherwise we return an empty string
+          return isset($sessionString[1]) ? $sessionString[1] : '';
+      }
+*/
+      // $token = getToken($user->session,'"');
+      
+      // DEV
+      // $token = 'c6b807a4b6f0e7a3cad7800c0a321ca2a2c7b4b2';
+
+      $token = isset($_SESSION['strava_auth_token']) ? $_SESSION['strava_auth_token'] : '';
+
+
+
+   // WORKING
+      $factory = StravaFactory::getInstance(); // Drupal\storyteller\Strava\Factory::getInstance();
+      $api_client = $factory->getApiClient($token);
+
+      $activities = $api_client->getAthleteActivities();
+
+
+
+
+      // $activityPhotos = $api_client->getActivityPhotos(608304292);
+      // print_r($activityPhotos);
+
+      // $activityKudos = $api_client->getActivityKudos(608304292);
+      // print_r($activityKudos);
+
+      // print $token;
+
+      // Working! But not needed..
+      // $listActivities = array_map(function ($value) {
+      //     return  $value['name'];
+      // }, $activities);
+
+
+      // print_r ($_currentActivities);
+
+      // print '<pre>';
+      // print_r($activities);
+      // print '</pre>';
+
+      // echo json_encode($activities);
+      
+      // $listActivities[] = 'No';
+
+      // drupal_json_output($activities);
+      // drupal_exit();
+
+      // drupal_add_js(array('storyteller' => $activities, 'setting');
+
+
+      // Insert an item at the beginning of the multidimensional array (to add an empty option)
+      $emptyOption = array('name' => 'Select one of your Strava activities');
+      array_unshift($activities, $emptyOption);
+
+
+      // 
+      // $ids = array_column($activities, 'id');
+      // $list = array_combine($ids, array_values($activities));
+      // print '<pre>';
+      // print_r($list);
+      // print '</pre>';
+
+      // Sending array to JS object
+      drupal_add_js(array('storyteller_strava' => array('activities' => $activities)), 'setting');
+
+      // Sending the token (to provide activity photos)
+      drupal_add_js(array('storyteller_strava' => array('token' => $token)), 'setting');
+
+
+      $form['#attached']['js'] = array(
+        drupal_get_path('module', 'storyteller_strava') . '/js/storyteller_strava.js',
+      );
+
+      // Setting a default title, in case the form gets submitted with no values
+      // $form['title'] = array(
+      //     '#default-value' => 'My Strava story'
+      // );
+
+      // Changing name to Submit button, from 'Save' (default) to 'Save as draft' (which is: Save + Unpublished checked)
+      $form['actions']['submit']['#value'] = 'Save as draft';
+
+
+      // Populating <select> activities
+      $form['field_activities'] = array(
+         '#type' => 'select',
+         '#title' => t('Pick an activity'),
+
+         // The select list is built on Activity Name as a key
+         '#options' => array_column($activities, 'name'),
+
+          // Variant: The select list is built on Activity ID as a value and Activity Name as a key
+          // '#options' => array_column($activities, 'name', 'id'),
+
+         '#weight' => -10,
+         '#description' => t('')
+      );
+  
+      $form['field_activity_image'][LANGUAGE_NONE]['#file_upload_description'] = t('PNG, JPG, GIF allowed. Max 8Mb');
+     // dpm($form['field_activity_image']);
+
+      // print '<pre>';
+      // print_r($form['field_activity_image']);
+      // print '</pre>';
+
+      // Linked to the permissions to view Node Publishing Options
+      if (preg_match('/_node_form$/', $form_id) && _storyteller_strava_access($form['#node']->type)) {
+        if ($form['options']['#access'] == FALSE) {
+          $form['options']['#access'] = TRUE;
+        }
+      }
+
+      // $form['options']['status'] = array(
+      //   '#type' => 'value',
+      //   '#value' => 1
+      // );
+
+      // Extra function on submit
+      //$form['actions']['submit']['#submit'][] = 'storyteller_form_submit_handler';
+     
+      $form['actions']['submit']['#submit'][] = 'storyteller_strava_form_submit_handler';
+      //array_unshift($form['actions']['submit']['#submit'], 'storyteller_form_submit_handler');
+      //$form['#submit'][] = 'privatemsg_forward_form_delete_submit';
+
+      // $form['#submit'][] = "storyteller_form_submit_handler";
+
+
+      return $form;   
+
+
+    } // End node-form 'story'
+
+   if ($form_id == 'profile_link') {
+      // if (isset($form['account']['mail'])) {
+      //   $form['account']['mail']['#description'] = 'user@example.edu';
+      // }
+
+      // return $form;   
+    }
+
+
+  } // End if 'strava user' role
+
+
+
+    //
+    // Contact form
+    //
+
+    if ($form_id == 'contact_site_form') {
+      $form['field_message'] = array(
+        '#type' => 'item',
+        '#markup' => "<div class='introduction'>
+        <h3>Thank you for reaching out.</h3>
+        <p>I am a Strava athlete living in the Netherlands and I've developed <a href='http://storyteller.fit' title='Storyteller for Strava'>Storyteller.fit</a> in July 2016.</p>
+        <p>What I like most about Strava is the community. It feels great to get to know other athletes, motivate each other, and share adventures beyond competition.</p>
+        <p><a href='http://storyteller.fit' title='Storyteller for Strava'>Storyteller for Strava</a> expands on that concept: it is for athletes to tell stories about running and cycling activities, complete with maps and pictures - thanks to the Strava APIs.</p>
+        <p>I have just released a first prototype, and it would mean a lot for me if you could give it a go. Any suggestion is very welcome.</p>
+        <p>Oh and if you like the idea - do spread the word - and a bit of the love I've put in the development of it.</p>
+        </div>",
+        '#weight' => -6,
+      );
+
+      // Setting default Subject and hiding the field
+      $form['subject']['#value'] = "Message from Storyteller";
+      $form['subject']['#access'] = FALSE;
+
+      return $form;   
+
+    }
+
+}
+
+
+    // TEST UPDATE ACTIVITY
+
+      // WORKING - creating new activity
+      // $newActivity = $api_client->createActivity('test strava api', 'run', '2016-06-08T17:45:29Z', '4750', $description = null, $distance = null);
+      // return $newActivity;
+
+      // updating existing activity
+      // $updActivity = $api_client->updateActivity('636740958', $name = null, $type = null, $private = false, $commute = false, $trainer = false, $gear_id = null, $description = 'new description!');
+      // return $updActivity;
+
+
+
+
+// Extra function on form submit
+
+function storyteller_strava_form_submit_handler($form, &$form_state) {
+    
+
+  // Node status (Published/Unpublished)
+  $formStatus = $form_state['values']['status'];
+
+ 
+
+  // Activity ID on Strava
+  $stravaID = $form_state['values']['field_activity_id']['und'][0]['value'];
+
+  // Activity Title on Strava
+  $stravaTitle = $form_state['values']['field_strava_title']['und'][0]['value'];
+
+  // Story title on Storyteller
+  $storyTitle = $form_state['values']['title'];
+
+  // Take the existing activity description on Strava
+  $stravaDescription = $form_state['values']['field_description']['und'][0]['value'];
+
+  // Take the node ID
+  $nodeID = $form_state['values']['nid'];
+
+  // drupal_set_message($stravaID . $formStatus . $stravaDescription);
+
+// IF story is Unpublished, stay on the page 
+  if ($formStatus == 0) {
+    $_GET['destination'] = '/node/' . $form_state['values']['nid'] . '/edit';
+  }
+
+// IF story is connected with an activity, if it is Published, and if a link to this Story isn't already present
+  if ($stravaID && $formStatus == 1 && strpos($stravaDescription, 'http://storyteller.fit/story/'.$nodeID) !== true) {
+      
+      // Getting the token
+      global $user;
+      //global $token;
+     // function getToken($sessionString,$delim){
+        // "foo a foo" becomes: array(""," a ","")
+       //    $sessionString = explode($delim, $sessionString, 3); // also, we only need 2 items at most
+           // we check whether the 2nd is set and return it, otherwise we return an empty string
+         //  return isset($sessionString[1]) ? $sessionString[1] : '';
+      // }
+      // $token = getToken($user->session,'"');
+
+      // Loading api client
+      //dpm($token);
+      $token = isset($_SESSION['strava_auth_token']) ? $_SESSION['strava_auth_token'] : '';
+
+      $factory = StravaFactory::getInstance(); // Drupal\storyteller\Strava\Factory::getInstance();
+      $api_client = $factory->getApiClient($token);
+
+    // Crafting the new description
+      $newDescription = $stravaDescription . " + Story at http://storyteller.fit/story/". $nodeID;
+
+     
+    // Updating description on Strava
+      if ($return = $api_client->updateActivity($stravaID, $name = $stravaTitle, null, null, null, null, null, $description = $newDescription)) {
+      // Format Strava PHP is
+      // $client->updateActivity($id, $name = null, $type = null, $private = false, $commute = false, $trainer = false, $gear_id = null, $description = null);
+     // unset($_SESSION['messages']['status'][1])
+      //dpm($_SESSION);
+      //drupal_get_messages(NULL);
+   // Set a custom message
+       drupal_set_message('The Strava activity description has been updated with a link to this page: <a href="http://strava.com/activities/' . $stravaID . '" target="_blank">View the activity on Strava</a>');
+        //dpm($return);
+        //return $return;
+      }
+      else {
+        drupal_set_message('The Strava activity description failed.');
+      }
+    // return $stravaID;
+   }
+
+
+}
+
+function storyteller_strava_webhooks($hook, $options, $headers, $access_token) {
+  $token = $access_token ? $access_token : STRAVA_API_DEFAULT_TOKEN;
+  $pest = new Pest(STRAVA_API_WEBHOOK_URL);
+  
+  switch($hook) {
+    case 'push_subscriptions':
+      $promise = $pest->post(STRAVA_API_WEBHOOK_URL .'push_subscriptions', $options, $headers);
+    break;
+    case 'activities':
+      $promise = $pest->get(STRAVA_API_URL . $options['client_id'], $options, $headers);
+    break;
+  }
+  //dpm($promise);
+  return $promise;
+}
+
+
+// The following is to allow users to unpublish their own content. Linked to 'Save as draft' function
+
+/**
+ * Implements hook_permission().
+ */
+function storyteller_strava_permission() {  
+  $perms = array(
+    'administer status of any content' => array(
+      'title' => t('Administer status for all content type'),
+      'description' => t(''),
+      'restrict access' => true
+    ),
+  );
+
+  foreach (node_type_get_types() as $type) {
+    if (isset($type->type)) {
+      $perm_types = array(
+        'administer status of any '. check_plain($type->type) .' content' => array(
+          'title' => t('Administer status of any '. check_plain($type->type) .' content'),
+          'description' => t(''),
+        ),
+
+        'administer status of own '. check_plain($type->type) .' content' => array(
+          'title' => t('Administer status of own '. check_plain($type->type) .' content'),
+          'description' => t(''),
+        ),
+      );
+      $perms = array_merge($perms,$perm_types);
+    }
+  }
+
+  return $perms;
+}
+
+function _storyteller_strava_access($type) {
+  return user_access('administer status of any content')
+      || user_access('administer status of any ' . check_plain($type) . ' content')
+      || user_access('administer status of own ' . check_plain($type) . ' content');
+}

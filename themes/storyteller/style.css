@@ -1,0 +1,2715 @@
+/* Drupal 7 Framework - Created by André Griffin + Storyteller CSS
+------------------------------------------------
+[Table of contents]
+
+ 0.Reset
+ 1.Global
+ 2.Layout
+ 3.Main
+ 4.Sidebars
+ 5.Header
+ 6.Navigation
+ 7.Nodes
+ 8.Comments
+ 9.Blocks
+10.Footer
+11.CSS Support
+12.Views
+13.CKEditor
+14.Forms
+15.Messages
+16.Custom
+17.Comments
+
+18.Breakpoints
+
+Font sizes: 16px base font with 24px line-height
+------------------------------------------------
+       font-size / line-height / margin-top
+------------------------------------------------
+40px = 2.5em     / 1.2         / 0.6em
+32px = 2em       / 1.5         / 0.75em
+24px = 1.5em     / 1           / 1em
+20px = 1.25em    / 1.2         / 1.2em
+16px = 1em       / 1..5        / 1.5em
+14px = 0.875em   / 1.7143      / 1.7143em
+13px = 0.8125em  / 1.8462      / 1.8462em
+12px = 0.75em    / 2           / 2em
+10px = 0.625em   / 2.4         / 2.4em
+
+Equation for font sizing: 
+  Desired px ÷ Default (or parent) px = em size
+------------------------------------------------*/
+
+/**
+ * 0.RESET 
+ */
+
+@import "reset.css";
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/**
+ * 1.GLOBAL
+ */
+
+body {
+  background: #fafafa;
+  color: #222; 
+  font-weight: normal;
+  font-size: 100%;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Arimo', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+  body.front #main h1 {
+    position: absolute;
+    visibility: hidden;
+    left: -1000rem;
+  }
+  .georgia {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 1.125rem;
+    font-weight: normal;
+    text-align: center;
+  }
+
+    header .call-action {
+      margin-bottom: .5rem;
+    }
+    header .button {
+      float: right;
+      margin-top: 8px;
+    }
+      body.front header .button {
+        float: none;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      /* Better than doing it with JS I guess.. */
+      body.not-front header .button.orange.full {
+        border-color: transparent;
+        color: orangered;
+        background: transparent;
+      }
+        body.not-front header .button.orange.full:hover {
+          border-color: orangered;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none;
+        }
+
+h1, .h1 {
+  margin-top: 0.75em;
+}
+
+h2, .h2 {
+  margin-top: 1em;
+}
+
+  .how-it-works h2,
+  body.node-type-story section.block-views h2,
+  h2.georgia {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-weight: normal;
+    text-align: center;
+  }
+    .how-it-works h2,
+    body.node-type-story section.block-views h2 {
+      margin-top: 3rem;
+      margin-bottom: 2rem;
+    }
+      body.node-type-story section.block-views h2 {
+        margin-bottom: 3rem;
+      }
+
+  h2#site-slogan,
+  header .call-action {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 1.125rem;
+    font-weight: normal;
+    text-align: center;
+    /* Invisible on normal pages */
+    visibility: hidden;
+    position: absolute;
+    left: -1000rem;
+  }
+    body.front h2#site-slogan,
+    header .call-action {
+      visibility: visible;
+      position: static;
+      left: 0;
+    }
+
+h3, .h3 {
+  margin-top: 1.2em;
+}
+
+h4, h5, h6, .h4, .h5, .h6 {
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.5;
+  margin-top: 1.5em;
+}
+
+p {
+  line-height: 1.6;
+  margin: 1em 0;
+}
+
+
+  /* Workaround for CKEditor - it takes default CSS text styles directly from Body.
+     Problem is, we want onlt CKEditor to be in Georgia, and Title-textarea - everything else is in Arial */
+  body,
+  .field-name-body {
+    font-family: Georgia, Times, "Times New Roman", serif;
+  }
+    p,
+    #container .field-name-body,
+    #container .field-name-body p {
+      font-size: 1.1875rem;
+    }
+      
+
+    header,
+    #container {
+      /*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+      font-family: Arial,sans-serif;
+      font-size: 1rem;
+    }
+      header p,
+      #container p {
+        font-size: .9375rem; /*1.25em;*/
+      }
+
+  body.page-contact .introduction {
+    max-width: 40rem;
+    padding-bottom: 2rem;
+  }
+
+  body.page-contact #container .introduction p {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 1.125rem;
+    font-weight: normal;
+  }
+  
+a { color: #037bb7; text-decoration: none; } /*069*/
+
+a:visited { color: #309; }
+
+a:hover, a:active, li a.active  { color: #39f; }
+
+a:focus { outline: thin dotted; }
+
+a:hover, a:active { outline: 0; }
+
+.small {
+  font-size: .8125rem;
+}
+
+.medium {
+  font-size: .9375rem;
+}
+
+.grey {
+  color: #777;
+}
+
+.light-grey {
+  color: #999;
+}
+
+.orange {
+  color: orangered;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+/* apply common styling after reset.css */
+
+li ul, li ol {  margin: 0; }
+ul, ol {  margin: 0 1.5em 1.5em 0;  padding-left: 1.5em; }
+ul {  list-style-type: disc; }
+ol {  list-style-type: decimal; }
+dl {  margin: 0 0 1.5em 0; }
+dl dt {  font-weight: bold; }
+dd {  margin-left: 1.5em; }
+hr {  background: #666;  border: none;  clear: both;  float: none;  height: 1px;  margin: 0 0 1.4375em;  width: 100%; }
+fieldset {  border: 1px solid #ccc;  margin: 0 0 1.4375em;  padding: 1.5em; }
+table {  margin-bottom: 1.5em;  width: 100%; }
+th, tr, td {  vertical-align: middle; }
+th { padding-right: 1em; }
+.sticky-header th, .sticky-table th {  border-bottom: 3px solid #ccc;  padding-right: 1em;  text-align: left; }
+
+/* Fix for CKEditor 'inherit' font setting */
+strong {
+  font-weight: bold !important;
+}
+
+em {
+  font-style: italic !important;
+}
+
+
+
+/**
+ * 2.LAYOUT
+ */
+
+.inner {
+    margin: 0 auto;
+  }
+
+  #main .inner {
+    margin: 0 auto;
+    width: 1148px; /*Like Strava*/
+  }
+
+
+#container {
+  background-color: #f2f2f2;
+  padding-top: 3.75rem;
+  padding-bottom: 5rem;
+}
+  body.front #container {
+    margin-top: 0;
+  }
+
+
+/* Story node: layout */
+.story-columns {
+  display: flex;
+}
+
+
+/* Static pages */
+
+body #main .static-page {
+    margin-top: 3rem;
+    background: #fafafa;
+    padding: 2rem;
+    border-radius: 4px;
+}
+
+
+
+/**
+ * 3.MAIN
+ */
+
+/* 1 column: global values*/
+
+#main {
+  display: inline;
+  margin: 0;
+}
+
+/* 3 columns */
+
+body.two-sidebars #main {
+  float: left;
+  margin: 0 0 0 240px;
+  padding: 0;
+  width: 460px;
+}
+
+/* 2 columns: sidebar-first */
+
+body.sidebar-first #main {
+  float: right;
+  margin: 0;
+  padding: 0;
+  width: 700px;
+}
+
+/* 2 columns: sidebar-second */
+
+body.sidebar-second #main {
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 700px;
+}
+
+/**
+ * 4.SIDEBARS
+ */
+
+/* 3 columns: sidebar-first */
+
+body.two-sidebars #sidebar-first {
+  float: left;
+  margin: 0 0 0 -700px;
+  padding: 0;
+  width: 220px;
+}
+
+/* 3 columns: sidebar-second */
+
+body.two-sidebars #sidebar-second {
+  float: right;
+  margin: 0;
+  padding: 0;
+  width: 220px;
+}
+
+/* 2 columns: sidebar-first */
+
+body.sidebar-first #sidebar-first {
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 220px;
+}
+
+/* 2 columns: sidebar-second */
+
+body.sidebar-second #sidebar-second {
+  float: right;
+  margin: 0;
+  padding: 0;
+  width: 220px;
+}
+
+/**
+ * 5.HEADER
+ */
+
+
+#header {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3.75rem;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+  z-index: 2;
+}
+  body.front #header {
+    position: relative;
+    text-align: center;
+    height: auto;
+  }
+
+
+#header #logo {
+  display: block;
+  float: left;
+}
+    body.not-front #header #logo img.logo-front {
+      display: none;
+    }
+
+
+  /* Front page logo */
+  body.front #header #logo {
+    margin: 2.5rem auto 2em auto;
+    float: none;
+  }
+    body.front #header #logo img.logo-front {
+      width: 15rem;
+      margin-left: 2rem;
+    }
+    body.front #header #logo img.logo-small {
+      display: none;
+    }
+
+
+
+#header #site-name-slogan,
+#header .call-action {
+  visibility: hidden;
+  position: absolute;
+  left: -1000rem;
+}
+  #header #site-name-slogan {
+    margin: 0 0 1.5em;
+  }
+  body.front #header #site-name-slogan,
+  body.front #header .call-action {
+    visibility: visible;
+    position: static;
+    left: 0;
+  }
+
+#header #site-name {
+  /* Invisible */
+  visibility: hidden;
+  position: absolute;
+  left: -1000rem;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+#header #site-name a:hover {
+  text-decoration: none;
+}
+
+#header #site-slogan {
+  margin: 0;
+}
+
+/* Login with Strava */
+
+#login_with_strava {
+  padding-top: 13px;
+}
+  body.front #login_with_strava {
+    padding-top: 0;
+    margin-top: .5rem;
+    margin-bottom: 1.5rem;
+  }
+
+#login_with_strava a {
+  text-align: center;
+}
+
+#login_with_strava a img {
+  width: 10rem;
+  float: right;
+}
+  body.front #login_with_strava a img {
+    width: 13rem;
+    float: none;
+  }
+
+
+
+/**
+ * 6.NAVIGATION
+ */
+
+#navigation {
+  float: right;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  line-height: 60px;
+}
+  body.front #navigation {
+    float: none;
+  }
+
+  /* Main menu*/
+    #navigation ul#main-menu {
+      clear: both;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #navigation ul#main-menu li {
+      margin: 0;
+      padding: 0;
+    }
+
+    #navigation ul#main-menu li a {
+      display: block;
+      padding: 0 2em 0 0;
+    }
+
+  /* User menu */
+  #navigation ul#user-menu,
+  nav ul#footer-menu {
+    clear: both;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+    #navigation ul#user-menu {
+      height: 60px;
+    }
+
+  #navigation ul#user-menu li,
+  nav ul#footer-menu li, {
+    margin: 0;
+    padding: 0;
+  }
+    nav ul#footer-menu li {
+      text-align: right;
+    }
+
+  #navigation ul#user-menu li a,
+  nav ul#footer-menu li a {
+    color: #222;
+    display: block;
+    padding: 0 0 0 2rem;
+  }
+    nav.info ul#footer-menu li a {
+      color: #666;
+    }
+    #footer .copyright {
+      padding-left: 2rem;
+    }
+    #footer .inline-block.copyright,
+    #footer .inline-block.powered-by-strava {
+        display: block !important;
+        margin: 1rem auto;
+    }
+      
+      #footer .powered-by-strava img {
+        width: 180px;
+        opacity: .7;
+      }
+
+    #navigation ul#user-menu li a:hover,
+    nav ul#footer-menu li a:hover {
+      color: #FC4C02;
+    }
+
+    #navigation ul#user-menu a {
+      width: 2.5rem;
+    }
+    #navigation ul#user-menu img.round {
+      width: 2.5rem;
+      margin-top: 10px;
+      margin-right: 1rem;
+      background: #f2f2f2;
+    }
+
+
+.breadcrumb {
+  clear: both;
+  padding: 1.5em 0 0;
+}
+
+#skip-link {
+  position: absolute;
+}
+
+/* menus and item lists */
+
+.item-list ul {
+  margin: 0;
+  padding: 0 0 0 1.5em;
+}
+
+.item-list ul li {
+  margin: 0;
+  padding: 0;
+}
+
+ul.menu li {
+  margin: 0;
+  padding: 0;
+}
+
+ul.inline {
+  clear: both;
+}
+
+ul.inline li {
+  margin: 0;
+  padding: 0 1em 0 0;
+}
+
+/* admin tabs */
+
+.tabs-wrapper {
+    position: absolute;
+    right: 0;
+    margin: 1rem 2rem;
+    z-index: 1;
+}
+  .tabs-wrapper li:first-child{
+    display: none;
+}
+
+ul.primary {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.primary li a {
+  background: none;
+  border: none;
+  display: block;
+  float: left;
+  line-height: 1.5em;
+  margin: 0;
+  padding: 0 1em;
+}
+
+/*ul.primary li a:hover, ul.primary li a.active {
+  background: #666;
+  border: none;
+  color: #fff;
+}*/
+/*
+ul.primary li a:hover {
+  background: #888;
+  text-decoration: none;
+*/}
+
+ul.secondary {
+  background: #666;
+  border-bottom: none;
+  clear: both;
+  margin: 0;
+  padding: 0;
+}
+
+ul.secondary li {
+  border-right: none;
+}
+
+ul.secondary li a, ul.secondary li a:link {
+  border: none;
+  color: #ccc;
+  display: block;
+  float: left;
+  line-height: 1.5em;
+  padding: 0 1em;
+}
+
+ul.secondary li a:hover, ul.secondary li a.active {
+  background: #888;
+  color: #fff;
+  text-decoration: none;
+}
+
+ul.secondary a.active {
+  border-bottom: none;
+}
+
+/**
+ * 7.NODES
+ */
+
+.node {
+  margin-bottom: 1.5em;
+}
+
+/* tags */
+
+.field-name-field-tags {
+  margin: 0 0 1.5em;
+}
+
+.field-name-field-tags .field-item {
+  margin: 0 1em 0 0;
+}
+
+.field-name-field-tags div {
+  display: inline;
+}
+
+/* profile */
+
+.profile {
+  margin: 1.5em 0;
+}
+
+.profile h3 {
+  border: none;
+}
+
+.profile dt {
+  margin-bottom: 0;
+}
+
+.profile dd {
+  margin-bottom: 1.5em;
+}
+
+.password-parent {
+  width: 36em;
+}
+
+/**
+ * 8.COMMENTS
+ */
+
+#comments {
+  clear: both;
+  margin-top: 1.5em;
+}
+
+.comment {
+  margin-bottom: 1.5em;
+}
+
+.comment .new {
+  color: red;
+  text-transform: capitalize;
+  margin-left: 1em;
+}
+
+/**
+ * 9.BLOCKS
+ */
+
+.block {
+  /*margin-bottom: 1.5em;*/
+}
+
+
+
+/**
+ * 10.FOOTER
+ */
+
+#footer {
+  clear: both;
+  margin-top: 2rem;
+  padding: 2em 0;
+  position: relative;
+}
+
+#footer img.greyscale {
+  width: 8rem;
+}
+
+#footer p {
+  margin-left: 1rem;
+  margin-top: .3rem;
+}
+  #footer span.orange {
+    color: orangered;
+  }
+
+#footer .inline-block.float-right {
+  font-family: Arial,sans-serif;
+}
+
+#footer .info {
+  margin-top: 1rem;
+  text-align: right;
+  font-size: .875rem;
+  color: #666;
+}
+
+#footer a.feed-icon {
+  position: absolute;
+  right: 0;
+  top: 1.6667em;
+}
+
+/**
+ * 11.CSS SUPPORT
+ *
+ * Built-in classes:
+ * .clearfix                            | contain floats
+ * .element-invisible                   | hide element visually
+ * .element-invisible.element-focusable | allow element to be focusable when navigated to via keyboard
+ * .element-hidden                      | hide visually and from screenreaders
+ */
+ 
+img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+  img.greyscale {
+    opacity: .8;
+    -webkit-filter: grayscale(100%); /* Chrome, Safari, Opera */
+    filter: grayscale(100%);
+  }
+
+
+.relative {
+  position: relative;
+}
+
+.clear { clear: both; }
+
+.float-right {
+  float: right;
+}
+
+/* display block */
+.display-block { display: block; }
+
+/* display inline-block */
+.inline-block { display: inline-block; }
+  .inline-block.top { vertical-align: top; }
+  .inline-block.middle { vertical-align: middle; }
+
+.round {
+  border-radius: 50%;
+}
+
+.border {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.padding {
+  padding: 1rem;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.white-bg {
+    border-radius: 4px;
+    background-color: #fafafa;
+  }
+
+
+/**
+ * 12.VIEWS
+ *
+ */
+
+ .stories-list .inline-block {
+  vertical-align: top;
+ }
+
+.stories-list .views-row {
+  margin-bottom: 2rem;
+ }
+
+.stories-list img.round {}
+ .stories-list h3 {
+  margin-top: 0;
+ }
+ .stories-list p{
+  margin-top: .3rem;
+  margin-bottom: 0;
+ }
+ .stories-list a {
+  color: #222;
+ }
+  .stories-list p.small a {
+    font-size: .875rem;
+   }
+  .stories-list p.small a {
+    color: #037bb7;
+   }
+
+ /* On the Front page */
+    body.front #container #block-views-stories-block-1 h2 {
+      visibility: hidden;
+      position: absolute;
+      left: -1000rem;
+    }
+    .stories-list {
+      margin: 0 auto;
+    }
+      .stories-list .views-story-item {
+      }
+
+      /* User page */
+      body.page-user .stories-list {
+        margin: 3rem .5rem 2rem .5rem;
+      }
+        body.page-user .stories-list .views-story-item {
+        }
+
+      /* All the stories */
+      body.page-stories .stories-list {
+        margin: 5rem auto 2rem auto;
+      }
+
+        body.page-stories .stories-list .views-story-item {}
+
+
+    /* Athlete ID is used on JS to check for missing avatars */
+    .stories-list span.athlete-id {
+      display: none;
+    }
+
+
+.more-link {
+  text-align: center;
+}
+  .more-link a {
+    color: orangered;
+  }
+    .more-link a:after {
+      content: '→';
+    }
+
+/* More stories on Story-node page */
+
+  body.node-type-story section.block-views {
+    margin: 3rem auto 0 auto;
+    border-top: 1px solid #dedbdb;
+  }
+
+
+
+/**
+ * 13.CKEditor
+ *
+ */
+
+  /* 
+    Hiding the Help box (otherwise a module is needed to achieve that
+    http://drupal.stackexchange.com/questions/12220/how-to-hide-input-format-options-and-help-text-under-a-textarea) 
+    */
+ #story-node-form .text-format-wrapper .filter-wrapper {
+    display: none;
+  }
+
+  /* Hiding the footer part of the editor - perhaps not needed */
+  .cke_bottom {display: none !important;}
+
+  /* Hiding borders */
+  #cke_edit-body-und-0-value {
+     border-top: none !important; 
+     border-bottom: none !important;
+     box-shadow: none;
+     border: none;
+  }
+    
+  /* Hiding the img button; so to preserve its functionality, but only for dragging images within the editor */
+  /* no clue why this does not work:
+     .cke_button .cke_button__image
+  */
+    #cke_18 {display: none;}
+
+    /* Moving the CKE toolbar on the left */
+    #cke_1_top {
+      margin-left: -1rem;
+      border: none;
+    }
+
+/* Sticky bar */
+.cke_top.sticky {
+    position: fixed;
+    top: 60px;
+    width: calc(1148px - 33rem);
+}
+
+
+
+/**
+ * 14.Forms
+ *
+ */
+
+
+/* Form items */
+
+  input[type=text], select, textarea {
+      font-family: inherit;
+      padding: .5rem 0;
+      border: none;
+      border-bottom: 1px solid #dedede;
+      background: none;
+  }
+    select {
+      width: 20rem;
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
+    /* Focus */
+    select:focus,
+    textarea:focus {
+      border-bottom: 2px solid #F26D3A;
+    }
+
+    /* Activities select */
+    .node-column-main .form-type-select {
+      padding: 1rem;
+      margin-left: -1rem;
+      /*border-radius: 4px;
+      background-color: #f2f2f2;*/
+    }
+
+    /* Title textarea */
+    .form-textarea-wrapper {
+      /*width: 35rem;*/
+    }   
+      .form-textarea-wrapper .grippie {
+        display: none;
+      }
+      .field-name-field-title-textarea {
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+      }
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value {
+      font-size: 1.5rem;
+    }
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value.expanded {
+      min-height: 6rem;
+    }
+    /* Textarea placeholder */
+    .placeholder {
+      margin-top: 1rem;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: #222 !important;
+    }
+
+
+  textarea:focus, input:focus, select:focus{
+      outline: none;
+  }
+
+  label {
+    padding: 0 .25rem;
+    font-size: .9375rem;
+    color: #666;
+  }
+    /* Hiding specific labels */
+      .form-type-select label,
+      .form-item-body-und-0-value label {
+        visibility: hidden;
+        position: absolute;
+        left: -1000rem;
+      }
+
+  /* Image Upload field */
+  .node-column-sidebar-right .field-type-image label,
+  .node-column-sidebar-right .field-type-image legend,
+  .node-column-sidebar-right .field-type-image thead,
+  .node-column-sidebar-right .field-type-image .tabledrag-toggle-weight-wrapper,
+  .node-column-sidebar-right .field-type-image table.sticky-header {
+    display: none;
+  }
+    /* Replacing the upload button */
+    .form-file-wrapper {
+      position: relative;
+      width: 12rem;
+      height: 3rem;
+      border-radius: 4px;
+      border: 2px solid green;
+      color: green;
+      background-color: transparent;
+    }
+      .form-file-wrapper:before,
+      .node-column-sidebar-right .form-file  {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+        .form-file-wrapper:before {
+          content: 'Upload a new picture';
+          line-height: 3rem;
+          text-align: center;
+        }
+        .node-column-sidebar-right .form-file {
+          background-color: transparent;
+          cursor: pointer;
+        }
+
+      .field-name-field-activity-image .description {
+        padding-top: .5rem;
+        font-size: .8125rem;
+      }
+
+    .node-column-sidebar-right .form-file {
+      opacity: 0;
+      width: 12rem;
+      height: 3rem;
+    }
+
+
+  /* Form action buttons*/
+
+    /* Wrapper */
+    .form-actions.form-wrapper {
+      display: inline-block;
+    }
+
+    form input[type=submit],
+    .tabs.primary li a,
+    .button {
+      background-color: transparent;
+      border: 2px solid;
+      border-radius: 4px;
+      padding: .3rem .5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: .2s all ease-out;
+      -webkit-transition: .2s all ease-out;
+    }
+      body.front .button {
+        padding: .4rem .6rem;
+        font-size: 1.0625rem;
+      }
+
+      form input[type=submit]#edit-submit {
+        /*margin-right: 1.5rem;*/
+        margin-right: .5rem;
+      }
+      /* Green */
+      form input[type=submit]#edit-submit,
+      .button.green {
+        border-color: green;
+        color: green;
+      }
+        /* Green :hover */
+        form input[type=submit]#edit-submit:hover,
+        form input[type=submit]#edit-submit:focus,
+        .comment-form .form-actions .form-submit:hover,
+        .comment-form .form-actions .form-submit:focus {
+            border-color: green;
+            background-color: green;
+            color: #fafafa;
+         }
+      /* Orange */
+      form input[type-submit].orange,
+      .button.orange {
+        border-color: orangered;
+        color: orangered; 
+      }
+        /* Orange full */
+        form input[type-submit].orange.full,
+        .button.orange.full,
+        .tabs.primary li a {
+          background-color: orangered;
+          color: #fafafa;
+        }
+          form input[type-submit].orange.full:hover,
+          .button.orange.full:hover {
+            -webkit-box-shadow: 0px 1px 2px 2px rgba(166,164,166,.5);
+            -moz-box-shadow: 0px 1px 2px 2px rgba(166,164,166,.5);
+            box-shadow: 0px 1px 2px 2px rgba(166,164,166,.5);
+          }
+          .tabs.primary li a:hover {
+            background-color: orangered;
+          }
+          
+      /* Orange minimal */
+      .comment-form .form-actions .form-submit,
+      form.comment-form input[type=submit]#edit-submit {
+        color: orangered; 
+        border-color: transparent;
+      }
+        .comment-form .form-actions .form-submit:hover,
+        form.comment-form input[type=submit]#edit-submit:hover {
+          border-color: orangered;
+          color: orangered;
+          background-color: transparent;
+        }
+
+      form .draft-button {
+        /*padding: .45rem .6rem;*/
+        padding: .3rem .5rem;
+      }
+
+      /* Delete buttons */
+      form input[type=submit]#edit-delete,
+      .button.grey,
+      .comment-form .form-actions .button {
+        color: grey;
+        border-color: transparent;
+        border-radius: 3px;
+      }
+        form input[type=submit]#edit-delete {
+          position: absolute;
+          right: 1rem;
+        }
+
+        /* Cancel button on comment reply */
+        .comment-form .form-actions .button {
+          float: right;
+          margin-right: 1rem;
+          padding: .3rem .4rem;
+          opacity: .7;
+        }
+
+        form input[type=submit]#edit-delete:hover,
+        form input[type=submit]#edit-delete:focus,
+        .button.grey:hover,
+        .comment-form .form-actions .button.reply-cancel:hover {
+          border-color: grey;
+         }
+
+
+/* Form Layout */
+
+  /* Hiding h1 and navigation on node/edit, for Strava user */
+  body.page-node-edit.strava-user h1.title,
+  body.page-node-edit.strava-user .tabs-wrapper {
+    display: none;
+  }
+
+
+  /* Back strip, on mobile. This is useful to prevent users from accidentally tapping on the Storyteller logo while typing the story */
+  form .strip-back {
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    background: #fafafa;
+    width: 100%;
+    height: 60px;
+  }
+    form .strip-back a {
+      line-height: 60px;
+      font-size: 1.5rem;
+      padding: 0 1.5rem;
+      opacity: .6;
+    }
+      form .strip-back a:visited {
+        color: grey;
+      }
+
+
+
+  /* Hiding fields */
+
+    /* Node/Add-Edit */
+    .node-story-form .form-item-title,
+    #edit-field-activity-id,
+    #edit-field-strava-title,
+    #edit-field-total-photo-count,
+    #edit-field-type,
+    #edit-field-date,
+    #edit-field-workout-type,
+    #edit-field-distance,
+    #edit-field-moving-time,
+    #edit-field-pace,
+    #edit-field-average-speed,
+    #edit-field-elevation,
+    #edit-field-summary-polyline,
+    #edit-field-description {
+      display: none;
+    }
+
+    /* Node/View */
+    .node-view-wrapper .field-name-field-title-textarea,
+    .node-view-wrapper .field-name-field-activity-id,
+    .node-view-wrapper .field-name-field-strava-title,
+    .node-view-wrapper .field-name-field-total-photo-count,
+    .node-view-wrapper .field-name-field-type,
+    .node-view-wrapper .field-name-field-date,
+    .node-view-wrapper .field-name-field-workout-type,
+    .node-view-wrapper .field-name-field-distance,
+    .node-view-wrapper .field-name-field-moving-time,
+    .node-view-wrapper .field-name-field-pace,
+    .node-view-wrapper .field-name-field-average-speed,
+    .node-view-wrapper .field-name-field-elevation,
+    .node-view-wrapper .field-name-field-summary-polyline,
+    .node-view-wrapper .field-name-field-activity-image,
+    .node-view-wrapper .field-name-field-description {
+      display: none;
+    }
+
+
+  body.strava-user .vertical-tabs {
+    display: none;
+  }
+
+
+    /* Sidebar right: Photos */
+    .story-columns .node-column-sidebar-right img {
+      max-width: 100%; /*calc(50% - .6rem);*/
+      height: auto;
+      display: inline-block;
+      margin-bottom: .3rem;
+      cursor: move;
+    }
+
+      /* All this is for hiding unnecessary items */
+        .story-columns .node-column-sidebar-right label,
+        .story-columns .node-column-sidebar-right .image-widget-data span,
+        .story-columns .node-column-sidebar-right .messages {
+          display: none;
+        }
+
+        .story-columns .node-column-sidebar-right div.image-preview {
+          float: none;
+          padding: 0;
+        }
+        
+        .story-columns .node-column-sidebar-right tr.even,
+        .story-columns .node-column-sidebar-right tr.odd {
+             background-color: transparent; 
+             border-bottom: none; 
+             padding: 0; 
+        }
+
+        .story-columns .node-column-sidebar-right fieldset {
+          border: none;
+          margin: 0;
+          padding: 0;
+        }
+
+  /* Views exposed filters */
+
+  .views-exposed-form {
+    margin: 0 1rem 3rem 1rem;
+    /*padding: 1rem 1.5rem;
+    border-radius: 4px;
+    background-color: #fafafa;*/
+  }
+
+      .views-exposed-form .views-exposed-widget {
+        display: inline-block;
+      }
+        .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
+          /*margin-right: 4rem;*/
+        }
+        .views-exposed-form .views-exposed-widget.views-widget-filter-combine {
+          width: calc(100% - 8rem);
+          overflow: hidden;
+        }
+
+      .views-exposed-form .views-exposed-widget label {
+        font-weight: normal;
+        padding-left: 0;
+      }
+
+      .views-exposed-form .views-exposed-widget input {
+        font-size: 1rem;
+      }
+
+     .views-exposed-form .views-exposed-widget input:focus {
+        border-bottom: 2px solid #F26D3A;
+      }
+          
+
+        .views-exposed-form .views-exposed-widget input:focus ~ label {
+        
+        }
+
+      .views-exposed-form .views-exposed-widget select#edit-field-type-value {
+        width: 5rem;
+      }
+
+      
+
+/* Contact form*/
+
+form.contact-form {
+    margin-top: 3rem;
+    background: #fafafa;
+    padding: 2rem;
+    border-radius: 4px;
+}
+  
+  form.contact-form .form-textarea-wrapper {
+    max-width: 35rem;
+  }
+
+
+
+/**
+ * 15.Messages
+ *
+ */
+
+div.status.messages {
+  background: #be7;
+    display: inline-block;
+    padding: .7rem 1.5rem;
+    margin: 2rem 1rem;
+    border-radius: 4px;
+}
+  /* Front page*/
+  body.front div.status.messages {
+    position: absolute;
+    z-index: 2;
+    top: -1rem;
+    left: 0rem;
+  }
+
+  div.status.messages em {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+
+/**
+ * 16.Custom
+ *
+ */
+
+
+/* Video and Laptop */
+  .how-it-works {
+    position: relative;
+    text-align: center;
+    margin: 3rem auto 2rem auto;
+    border-top: 1px solid #dedbdb;
+  }
+
+    .how-it-works video {
+      display: block;
+      margin: 0 auto;
+      padding: 1rem;    
+      background: #e8e8e8;
+      border-radius: 10px;
+      border: 1px solid #c0c0c0;
+    }
+
+
+
+  /**
+   * 17.Comments
+   */
+
+
+   /* Switch for Disabling comments, on node/add/edit */
+   .comments-switch {
+      padding-bottom: 1rem;
+      display: block;
+   }
+     .comments-switch label {
+        display: inline-block;
+     }
+
+
+   /* Comments */
+
+  .comments-wrapper {
+    width: 100%;
+    margin: .5rem .5rem 1rem 0;
+    padding: .5rem;
+  }
+
+  
+  #comment-form, .comment-form,
+  div.comment-body {
+      min-width: auto;
+      width: calc(100% - 6rem);
+      display: inline-block;
+      vertical-align: top;
+  }
+
+  div.comment-body {
+    width: 100%;
+  }
+
+  #comments {
+    border: none;
+  }
+
+  .comments-wrapper h2.title {
+    display: none;
+  }
+
+  .comments-wrapper .inline-block p {
+    margin: .5rem 0;
+  }
+  
+  .comments-wrapper .comment-body {
+    border: none;
+    border-radius: 4px;
+    width: auto;
+    padding: .25rem .5rem .5rem .5rem;
+    margin: .25rem 0;
+  }
+
+  .comment-user-avatar {
+    margin-right: 1rem;
+  }
+
+  .comment-avatar {
+    margin-right: .5rem;
+  }
+
+  .comments-wrapper img.round {
+    width: 4rem;
+  }
+
+  .comments-wrapper .comment-form textarea,
+  .comments-wrapper .field-name-comment-body .field-item {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+    .comments-wrapper .comment-form textarea {
+      min-height: 8rem;
+      width: calc(100% - 1rem);
+    }
+      .comments-wrapper .comment-form textarea.expanding {
+        min-height: 3rem;
+      }
+
+/* Comment form */
+
+  .comments-wrapper .comment-form-container,
+  .comments-wrapper form.comment-form {
+    background-color: #fafafa;
+    border-radius: 4px;
+  }
+    .comments-wrapper form.comment-form {
+      width: calc(100% - 1rem);
+    }
+
+    .comments-wrapper .comment-form-container {
+      padding: .5rem;
+      margin-top: 1rem;
+    }
+      .comments-wrapper .comment-form-container .comment-body {
+        margin-top: .125rem;
+      }
+
+    .comments-wrapper .form-type-textarea {
+      margin-top: .125rem;
+    }
+
+    .comment-user-avatar + div,
+    .comment-avatar + div {  /* It's the container of the textarea, the template comes without classes - so this is to point at it */
+      display: inline-block;
+      width: calc(100% - 5rem);
+    }
+
+      .comments-wrapper .comment-form .field-name-comment-body,
+      .comments-wrapper .comment-form #edit-comment-body-und-0-value {
+        width: 100%;
+      }
+        .comments-wrapper .comment-form #edit-comment-body-und-0-value {
+          /*overflow-y: hidden;*/
+        }
+
+    #comments .form-action {
+      margin-bottom: 0;
+    }
+
+/* Login box for anonymous user on comments */
+
+  /* Page: unsubscribe to comment notificaton */
+    .comments-wrapper .comment-anonymous {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+     .comments-wrapper .comment-anonymous img { /*the connect with strava button*/
+        width: 12rem;
+      }
+      .comments-wrapper .comment-anonymous span {
+        margin-left: .75rem;
+      }
+
+              
+
+/* Comment inline links */
+
+  .comments-wrapper .comment-data ul.inline.links {
+    display: none;
+  }
+
+  /* Anonymous user 
+  .comments-wrapper ul.inline.links {
+    margin: 0;
+  }
+      .comments-wrapper ul.inline.links li.comment_forbidden {
+        display: none;
+      }
+  */
+
+  /* Logged in 
+  body.logged-in .comments-wrapper ul.inline.links {
+    margin-left: 4.9rem;
+    margin-top: .5rem;
+  }
+    body.logged-in .comments-wrapper ul.inline.links li {
+      display: inline-block;
+      vertical-align: top;
+    }
+    body.logged-in .comments-wrapper ul.inline.links a {
+      color: orangered;
+      font-size: .9375rem;
+    }
+  */
+
+  /* Page: unsubscribe to comment notificaton - when user clicks on a unsubscribe mail link */
+    body.page-comment-notify-disable #main {
+      margin: 2rem auto;
+      display: block;
+      max-width: 36rem;
+      padding: 2rem;
+      background: #fafafa;
+      text-align: center;
+    }
+
+
+
+/**
+ * 18.Breakpoints
+ *
+ */
+
+
+@media (min-width:20em) { /* smartphones, iPhone, portrait 480x320 phones */
+
+  /**
+   * 1.GLOBAL
+   */
+
+   .mobile-hidden {
+      display: none;
+   }
+
+   #header #site-slogan {
+    margin: 0 2rem;
+   }
+
+
+  h1, .h1 {
+    font-size: 1.5em;
+    line-height: 1.3;
+  }
+
+  h2, .h2 {
+    font-size: 1.25em;
+    line-height: 2rem;
+  }
+
+    .how-it-works h2,
+    body.node-type-story section.block-views h2,
+    h2.georgia {
+      font-size: 1.5rem;
+    }
+
+  h3, .h3 {
+    font-size: 1.0625em;
+    line-height: 1.3;
+  }
+
+
+  /**
+   * 2.LAYOUT
+   */
+
+  /* Story node: layout */
+  .story-columns {
+    flex-direction: column;
+    position: relative;
+    margin-top: 1rem;
+    
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+  /* Sorting columns */
+  .story-columns .node-column-sidebar-right {
+    order: 1;
+  }
+  .story-columns .node-column-sidebar-left {
+    order: 2;
+  }
+  .story-columns .node-column-main {
+    order: 3;
+  }
+
+    .story-columns .node-column-main {
+    }
+
+      /* Story node form: Sidebar left*/
+      .story-columns .node-column-sidebar-left {}
+
+          .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p {
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: 0;
+            padding: 0 0 0 .5rem;
+          }
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.type {
+              padding: 0 .5rem 0 1.25rem;
+            }
+            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.moving-time {
+              padding-left: 4.5rem;
+            }
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.date,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.avg-speed,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.pace {
+              visibility: hidden;
+              position: absolute;
+              left: -1000rem;
+            }
+              form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity {
+                visibility: visible;
+                position: static;
+                left: 0;
+                width: calc(100% - 5rem);
+              }
+
+
+          .story-columns .node-column-sidebar-left .icon {
+            width: 2rem;
+          }
+
+      /* Sticky: anchor */
+      .sticky-anchor {
+        display: none;
+      }
+
+
+      /* Story node form: Sidebar right */
+      .story-columns .node-column-sidebar-right {
+        overflow: auto;
+      }
+
+        /* Story node form: Sidebar right */
+        .story-columns .node-column-sidebar-right .athlete-info{
+          max-width: 13rem;
+        }
+
+        /* Right column on node/view */
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {
+            width: 3rem;
+            height: 3rem;
+            margin-right: .5rem;
+            cursor: auto;
+          }
+            /* Bigger avatar on page user */
+            body.page-user .node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {
+              width: 4rem;
+              height: 4rem;
+            }
+          
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h1,
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h3 {
+            font-size: 1.125rem;
+            line-height: 1.2rem;
+            margin-top: .2rem;
+          }
+
+              .node-view-wrapper.story-columns .node-column-sidebar-right.padding h3 a {
+                color: #222;
+              }
+
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding p {
+            font-size: .875rem !important;
+            margin: .2rem 0 .5rem 0;
+          }
+
+  /**
+   * 5.HEADER
+   */
+
+    body.not-front #header #logo img.logo-small {
+      width: 7rem;
+      margin-top: .6rem;
+      margin-left: .8rem;
+    }
+
+      body.not-front header .button {
+          margin-right: 0;
+      }
+
+    body.not-front.page-user header .button.orange.full {
+      display: none;
+    }
+
+  /**
+   * 6.NAVIGATION
+   */
+
+   /* Hiding second item on menu*/
+   #navigation li {
+    overflow: hidden;
+    width: 0;
+   }
+     #navigation li:first-child {
+      width: 5rem;
+     }
+
+      /* Dropdown menu */
+      input#toggle-menu {
+        visibility: hidden;
+        position: absolute;
+        left: -9999rem;
+      }
+
+      /* The arrow on mobile creates an overlay on top of the avatar. On click, it opens the dropdown menu */
+      #navigation li .arrow {
+        position: absolute;
+        top: 0;
+        right: .3rem;
+        width: 5rem;
+        cursor: pointer;
+      }
+
+      /* Toggled State */
+      input#toggle-menu:checked ~ ul li:nth-child(2) {
+        display: block;
+        width: auto;
+      }
+      input#toggle-menu:checked ~ ul li a span {
+         display: block;
+        width: 10rem;
+        position: absolute;
+        box-shadow: 0px 1px 1px 1px #ccc;
+        padding-right: 2rem;
+        right: 0;
+        background: #fafafa;
+      }
+        input#toggle-menu:checked ~ ul li a.link-profile span {
+          top: 60px;
+        }
+        input#toggle-menu:checked ~ ul li a.link-logout span {
+          top: 120px;
+        }
+
+
+     #navigation li:nth-child(2) {
+      display: none;
+     }
+     #navigation ul#user-menu li a {
+      padding: 0;
+      width: 4.5rem;
+     }
+     #navigation li:first-child span {
+      display: none;
+     }
+
+
+
+
+  /**
+   * 10.FOOTER
+   */
+
+   #footer .inline-block {
+    display: block;
+    text-align: center;
+   }
+       #footer .float-right {
+        float: none;
+       }
+
+       #footer .float-right .inline-block {
+        display: inline-block;
+       }
+
+       #footer .info {
+        text-align: center;
+       }
+
+  /**
+  * 11.CSS SUPPORT
+  *
+  */
+
+  .white-bg {
+    padding: 0 1.5rem;
+  }
+
+  /* Story add button, on user Profile page */
+   .white-bg.story-add {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      text-align: center;
+    }
+      .story-add span {
+        display: block;
+        padding-top: .5rem;
+      }
+
+  /**
+   * 12.VIEWS
+   *
+   */
+  
+  .stories-list .views-row {
+    padding-left: 1rem;
+    padding-right: 1rem;
+   }
+
+  .stories-list img.icon {
+    position: absolute;
+    top: 3.5rem;
+    left: 1rem;
+
+    width: 1.5rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
+  }
+    /* Icon on page-user */
+    body.page-user .stories-list img.icon {
+      position: static;
+      top: 0;
+      left: 0;
+    }
+
+  .stories-list img.round {
+    width: 3rem;
+    height: 3rem;
+    margin-right: 1rem;
+   }
+  .stories-list .views-story-item {
+    max-width: calc(100% - 6rem);
+  }
+
+  /* Comment icon */
+  .stories-list .comment-count {
+    margin-left: 4rem;
+  }
+    .stories-list .comment-count img {
+      position: relative;
+      top: .2rem;
+    }
+
+    .stories-list .comment-count .comment-icon {
+      font-size: 1.125rem;
+      opacity: .5;
+    }
+
+
+  /**
+   * 14.FORMS
+   */
+
+   form .story-columns .node-column-sidebar-right {
+    display: none;
+   }
+
+
+  /**
+   * 16.Custom
+   */
+
+  /* Video and Laptop */
+    .how-it-works {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      width: 90%;
+      max-width: 35rem;
+    }
+      .how-it-works video {
+        width: 100%;
+        max-width: 100%;
+      }
+
+  /* Green promotional circle */
+
+    .spread-word {
+      position: absolute;
+      bottom: -6rem;
+      background: #a8daa8;
+      padding: 3rem .8rem .8rem .8rem;
+      border-radius: 50%;
+      font-size: 14px;
+      width: 13rem;
+      height: 13rem;
+
+      /* Initial status */
+      visibility: hidden;
+      right: 8000rem;
+    }
+
+  /* Maintenance page */
+
+  body.maintenance-page #container {
+    margin: 5rem auto;
+    background: transparent
+  }
+
+    body.maintenance-page #header {
+      position: static;
+    }
+    body.maintenance-page #header #logo {
+      float: none;
+    }
+      body.maintenance-page #header #logo img {
+        width: 15rem;
+        display: block;
+        margin: 0 auto;
+      }
+
+    body.maintenance-page section#main {
+      text-align: center;
+      width: 32rem;
+      display: block;
+      margin: 2rem auto;
+    }
+
+
+}
+@media (min-width:30.063em) { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+
+  /**
+   * 2.LAYOUT
+   *
+   */
+
+       /* Story node form: Sidebar right */
+        .story-columns .node-column-sidebar-right .athlete-info{
+          max-width: none;
+        }
+
+
+      /* Static pages */
+      body #main .static-page {
+          max-width: 40rem;
+      }
+
+
+
+  /**
+   * 5.HEADER
+   */
+
+   #header {
+    padding: 0 1rem;
+   }
+
+  /* Front page logo */
+  body.front #header #logo {
+    margin-top: 5rem;
+  }
+
+     body.not-front header .button {
+        margin-right: .5rem;
+    }
+
+
+  /**
+   * 6.NAVIGATION
+   */
+
+    #footer .inline-block.copyright,
+    #footer .inline-block.powered-by-strava {
+        display: inline-block !important;
+        margin: 0;
+    }
+      
+      #footer .powered-by-strava img {
+        opacity: .7;
+        margin-left: 2rem;
+      }
+
+  /**
+   * 10.FOOTER
+   */
+
+   #footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+   }
+
+
+
+  /**
+   * 12.VIEWS
+   */
+
+  .stories-list .views-story-item {
+    max-width: calc(100% - 7.5rem);
+  }
+
+  /* Comment icon */
+  .stories-list .comment-count {
+    margin-left: 0;
+    position: absolute;
+    right: 0;
+  }
+  
+
+  /**
+   * 16.CUSTOM
+   */
+
+      .how-it-works video {
+        width: calc(100% - 6rem);
+        max-width: calc(100% - 6rem);
+      }
+
+
+}
+@media (min-width:40.063em) { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+
+  /**
+   * 1.GLOBAL
+   */
+
+  #header #site-slogan {
+    margin: 0;
+   }
+
+     h2#site-slogan span {
+      display: block;
+     }
+
+  h1, .h1 {
+      font-size: 1.75em;
+      line-height: 1.4;
+    }
+
+    h2, .h2 {
+      font-size: 1.5em;
+    }
+
+      .how-it-works h2,
+      body.node-type-story section.block-views h2,
+      h2.georgia {
+        font-size: 1.75rem;
+      }
+
+  h3, .h3 {
+    font-size: 1.25em;
+    line-height: 1.4;
+  }
+
+
+
+    /**
+     * 6.NAVIGATION
+     */
+
+     /* Hiding second item on menu*/
+     #navigation li {
+      width: auto;
+     }
+       #navigation li:first-child {
+        width: auto;
+        margin-right: 0;
+       }
+       #navigation li img {
+        margin-right: 1rem;
+       }
+       #navigation li:nth-child(2) {
+        display: inline-block;
+       }
+       #navigation ul#user-menu li a {
+        padding: 0 0 0 2rem;
+        width: auto;
+       }
+       #navigation li span {
+        display: inline-block;
+       }
+
+       #navigation li div.mobile {
+        display: none;
+       }
+
+      /* Hiding dropdown arrow */
+      #navigation li .arrow,
+      #navigation input#toggle-menu {
+        display: none;
+      }
+
+       #navigation li:first-child span {
+        display: inline-block;
+       }
+
+
+    /* TABS */
+
+      .tabs-wrapper {
+        right: 16%;
+      }
+
+  /**
+   * 11.CSS SUPPORT
+   *
+   */
+
+    /* Story add button, on user Profile page */
+     .white-bg.story-add {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        text-align: left;
+      }
+        .story-add span {
+          display: inline;
+          padding-top: 0;
+        }
+
+  /**
+   * 12.VIEWS
+   *
+   */
+  
+  .stories-list .views-row {
+    padding-left: 0;
+    padding-right: 0;
+   }
+
+  .stories-list img.icon {
+    position: static;
+    left: 0;
+    top: 0;
+    
+    width: 2rem;
+    margin-top: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
+  .stories-list img.round {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-right: 1.5rem;
+   }
+    .stories-list {
+      max-width: 38rem;
+    }
+      .stories-list .views-story-item {
+        max-width: 26rem;
+      }
+
+      /* User page */
+      body.page-user .stories-list {
+        max-width: 35rem;
+      }
+        body.page-user .stories-list .views-story-item {
+          max-width: 27rem;
+        }
+
+      /* All the stories */
+      body.page-stories .stories-list {
+        max-width: 38rem;
+      }
+
+        body.page-stories .stories-list .views-story-item {
+          max-width: 25rem;
+        }
+
+      /* Comment count */
+      .stories-list .comment-count {
+        margin-top: 1.5rem;
+      }
+
+
+  /**
+   * 14.Forms
+   *
+   */
+
+  /* Views exposed filters */
+
+  .views-exposed-form {
+    margin: 0 0 3rem 0;
+  }
+
+        .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
+          margin-right: 4rem;
+        }
+        .views-exposed-form .views-exposed-widget.views-widget-filter-combine {
+          width: auto;
+          overflow: visible;
+        }
+
+
+  /**
+   * 16.Custom
+   *
+   */
+
+  /* Video and Laptop */
+    .how-it-works {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+
+  /**
+   * 17.Comments
+   */
+
+  .comments-wrapper {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .comments-wrapper .comment-form-container,
+  .comments-wrapper form.comment-form {
+    width: 35rem;
+  }
+
+
+   /* Switch for Disabling comments, on node/add/edit */
+   .comments-switch {
+      display: inline-block;
+      margin-left: 1.5rem;
+      padding: 0;
+   }
+
+  .comments-wrapper .inline-block p {
+    white-space: nowrap;
+  }
+
+
+}
+
+@media (min-width:60.063em) { /* tablet, landscape iPad, lo-res laptops ands desktops */
+
+  .mobile {
+    display: none;
+  }
+
+  .mobile-hidden {
+    display: block;
+   }
+     .mobile-hidden.inline-block {
+      display: inline-block;
+     }
+
+  /**
+   * 2.LAYOUT
+   */
+
+
+  /* Story node: layout */
+  .story-columns {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-top: 4rem;
+
+    max-width: 100%;
+  }
+
+  /* Story node: main column */
+  .story-columns .node-column-main {
+    width: calc(1148px - 30rem);
+    min-height: 33rem;
+  }
+
+
+  /* Sorting columns */
+  .story-columns .node-column-sidebar-left {
+    order: 1;
+  }
+  .story-columns .node-column-main {
+    order: 2;
+  }
+  .story-columns .node-column-sidebar-right {
+    order: 3;
+  }
+
+    /* Story node form: Main */
+    .story-columns .node-column-main {
+      min-height: 33rem;
+      margin: 0 2rem 0 2.5rem;
+      padding: 0 2rem;
+    }
+
+      /* Story node form: Sidebar left*/
+      .story-columns .node-column-sidebar-left {
+        margin-top: 60px;
+        width: 7rem;
+        text-align: right;
+      }
+        /* Sidebar-inner - used on Sticky */
+          .story-columns .node-column-sidebar-left .sidebar-inner .activity-data {
+            width: 7rem;
+          }
+
+          .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p {
+            display: block;
+            margin-top: 1rem;
+            padding: 0;
+          }
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.type {
+              padding: 0;
+            }
+            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity {
+              width: auto;
+            }
+            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.moving-time {
+              padding-left: 0;
+            }
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.date,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.avg-speed,
+            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.pace {
+              visibility: visible;
+              position: static;
+              left: 0;
+            }
+
+
+          .story-columns .node-column-sidebar-left .icon {
+            width: 2rem;
+          }
+
+
+    /* Story node form: Sidebar right */
+      .story-columns .node-column-sidebar-right {
+        width: 19rem;
+        z-index: 1;
+        overflow-x: hidden;
+      }
+      .story-columns .node-column-sidebar-right .sidebar-inner-right {
+        width: 18rem;
+        max-height: calc(100vh - 80px);
+        overflow: auto;
+        background-color: #f2f2f2;
+      }
+        /* Sticky: anchor */
+        .sticky-anchor {
+          display: block;
+          position: absolute;
+          top: -60px;
+        }
+
+        /* Sticky Sidebar */
+        /*.story-columns .node-column-sidebar-left.sticky .sidebar-inner,*/
+        .story-columns .node-column-sidebar-right.sticky .sidebar-inner-right {
+          position: fixed;
+          top: 80px;
+        }
+
+        /* Right column on node/view */
+        .node-view-wrapper.story-columns .node-column-sidebar-right.padding {
+          margin-top: 2rem;
+          padding-right: 0;
+        }
+
+
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {
+            width: 4rem;
+            height: 4rem;
+            margin-right: 1rem;
+            cursor: auto;
+          }
+
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h1,
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h3 {
+            font-size: 1.25rem;
+            margin-top: .5rem;
+          }
+          .node-view-wrapper.story-columns .node-column-sidebar-right.padding p {
+            font-size: .9375rem !important;
+          }
+          
+
+      /* User page */
+      body.page-user .story-columns {
+        margin-top: 2rem;
+      }
+        body.page-user .story-columns .node-column-main {
+          margin-top: 2rem;
+        }
+
+
+  /**
+   * 5.HEADER
+   */
+
+    body.not-front #header #logo img.logo-small {
+      width: 14.5rem;
+      margin-left: 0;
+      margin-top: .5rem;
+    }
+      header .button {
+          margin-right: 0;
+      }
+
+    body.not-front.page-user header .button.orange.full {
+      display: block;
+    }
+
+  /**
+   * 7.NAVIGATION
+   */
+
+    .tabs-wrapper {
+      position: static;
+      right: auto;
+      margin: 2rem 0 -2rem 11.5rem;
+    }
+
+  /**
+   * 10.FOOTER
+   */
+
+   #footer .inline-block {
+    display: inline-block;
+    text-align: left;
+   }
+       #footer .float-right {
+        float: right;
+        text-align: right;
+       }
+
+       #footer .info {
+        text-align: right;
+       }
+
+  /**
+  * 11.CSS SUPPORT
+  *
+  */
+
+  .white-bg {
+    padding: 0 2rem;
+  }
+
+
+  /* More stories on Story-node page */
+
+    body.node-type-story section.block-views {
+      position: relative;
+      width: 40rem;
+      max-width: 40rem;
+      margin: 3rem auto 0 10.5rem;
+    }
+
+
+  /**
+   * 12.VIEWS
+   */
+
+      /* User page */
+      body.page-user .stories-list {
+        margin: 3rem auto 2rem 2rem;
+      }
+
+  /**
+   * 14.FORMS
+   */
+
+   form .story-columns .node-column-sidebar-right {
+    display: block;
+   }
+
+  /* Form action buttons*/
+
+    /* Wrapper */
+    form input[type=submit],
+    .tabs.primary li a,
+    .button {
+      padding: .4rem .6rem;
+      font-size: 1.0625rem;
+    }
+      form input[type=submit]#edit-submit {
+        margin-right: 1.5rem;
+      }
+
+      form .draft-button {
+        padding: .45rem .6rem;
+      }
+
+        form input[type=submit]#edit-delete {
+          left: 45.5rem;
+          right: auto;
+        }
+
+
+  /**
+   * 15.Messages
+   *
+   */
+
+    div.status.messages {
+      margin: 2rem 2rem 0 11.5rem;
+    }
+
+  /**
+   * 16.Custom
+   */
+
+  /* Video and Laptop */
+    .how-it-works {
+      width: 100%;
+      max-width: auto;
+    }
+
+    .how-it-works:after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 1.5rem;
+      bottom: -1.15rem;
+      background: #dfdfdf;
+      border-radius: 6px;
+      border: 1px solid #c0c0c0;
+    }
+
+
+    /**
+     * 17.Comments
+     */
+
+    .comments-wrapper {
+      width: calc(1148px - 30rem);
+      margin: 0rem 2rem 0 9rem;
+      max-width: 40rem;
+    }
+
+    .comments-wrapper .comment-form-container,
+    .comments-wrapper form.comment-form {
+      width: 35rem;
+    }
+
+
+}
+@media (min-width:64.063em) { /* big landscape tablets, laptops, and desktops */}
+@media (min-width:80.063em) { /* hi-res laptops and desktops */
+
+
+  /**
+   * 2.LAYOUT
+   */
+
+  .inner {
+      width: 1148px; /*Like Strava*/
+    }
+
+
+  /**
+   * 5.HEADER
+   */
+
+   #header {
+    padding: 0;
+   }
+
+  /**
+   * 10.FOOTER
+   */
+
+
+   #footer {
+    padding-left: 0;
+    padding-right: 0;
+   }
+
+  /**
+   * 16.Custom
+   *
+   */
+
+  /* Video and Laptop */
+    .how-it-works {
+      width: 50rem;
+      max-width: 50rem;
+    }
+      .how-it-works video {
+        width: 42rem;
+        max-width: 42rem;
+      }
+
+  /* Green promotional circle */
+
+    .spread-word {
+      /* Visible */
+      visibility: visible;
+      right: 8rem;
+    }
+
+
+  /**
+   * 17.Comments
+   */
+
+  .comments-wrapper {
+    margin: 0 2rem 0 9.5rem;
+  }
+
+
+
+
+
+}
