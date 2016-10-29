@@ -58,7 +58,7 @@ function storyteller_strava_init() {
  */
 function storyteller_strava_views_post_execute(&$view) {
   if ($view->name == 'stories') {
-    drupal_add_js(drupal_get_path('module', 'storyteller_strava').'/js/services.js');
+    drupal_add_js(drupal_get_path('module', 'storyteller_strava').'/js/services.js', JS_THEME);
   }
 }
 
@@ -149,7 +149,10 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
 
     // Save profile2 data
     profile2_save($profile);
-   
+
+    // Save User account: this way the 'URL alias' /writer/strava_athlete_id gets created
+    user_save($user, null);
+
     // Redirection
     // This is redirection without login on Strava externally (aka user was already logged in strava in browser)
     $drupal_referer = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : $_SESSION['strava_auth_destination'];
@@ -159,7 +162,7 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
       $chunks = explode('/', $path);
     
       if (is_array($chunks)) {
-        if ($chunks[0] == 'node' && is_numeric($chunks[1])) {
+        if (($chunks[0] == 'node' && is_numeric($chunks[1])) || $chunks[0] == 'stories') {
        
         /* 
         // A variation, uncomment and comment drupal_goto under if better filtering per node is needed or similar (i.e. only for story content type)
@@ -244,7 +247,7 @@ function storyteller_strava_form_alter(&$form, &$form_state, $form_id) {
       $factory = StravaFactory::getInstance(); // Drupal\storyteller\Strava\Factory::getInstance();
       $api_client = $factory->getApiClient($token);
 
-      $activities = $api_client->getAthleteActivities();
+      $activities = $api_client->getAthleteActivities($before = null, $after = null, $page = null, $per_page = 200);
 
 
 
@@ -300,6 +303,7 @@ function storyteller_strava_form_alter(&$form, &$form_state, $form_id) {
 
       $form['#attached']['js'] = array(
         drupal_get_path('module', 'storyteller_strava') . '/js/storyteller_strava.js',
+        drupal_get_path('module', 'storyteller_strava') . '/js/franc/franc.js',
       );
 
       // Setting a default title, in case the form gets submitted with no values
@@ -328,6 +332,8 @@ function storyteller_strava_form_alter(&$form, &$form_state, $form_id) {
   
       $form['field_activity_image'][LANGUAGE_NONE]['#file_upload_description'] = t('PNG, JPG, GIF allowed. Max 8Mb');
      // dpm($form['field_activity_image']);
+      $form['field_embed_link'][LANGUAGE_NONE]['#prefix'] = '<div><img src="/sites/default/themes/storyteller/img/icon-video.png" class="inline-block middle" />&nbsp; Video from web';
+      $form['field_embed_link'][LANGUAGE_NONE]['#suffix'] = '</div>';
 
       // print '<pre>';
       // print_r($form['field_activity_image']);
@@ -384,9 +390,10 @@ function storyteller_strava_form_alter(&$form, &$form_state, $form_id) {
         <h3>Thank you for reaching out.</h3>
         <p>I am a Strava athlete living in the Netherlands and I've developed <a href='http://storyteller.fit' title='Storyteller for Strava'>Storyteller.fit</a> in July 2016.</p>
         <p>What I like most about Strava is the community. It feels great to get to know other athletes, motivate each other, and share adventures beyond competition.</p>
-        <p><a href='http://storyteller.fit' title='Storyteller for Strava'>Storyteller for Strava</a> expands on that concept: it is for athletes to tell stories about running and cycling activities, complete with maps and pictures - thanks to the Strava APIs.</p>
+        <p><a href='http://storyteller.fit' title='Storyteller.git'>Storyteller.fit</a> expands on that concept: it is for athletes to tell stories about running and cycling activities, complete with maps and pictures - thanks to the Strava APIs.</p>
         <p>I have just released a first prototype, and it would mean a lot for me if you could give it a go. Any suggestion is very welcome.</p>
         <p>Oh and if you like the idea - do spread the word - and a bit of the love I've put in the development of it.</p>
+        <p>- <em>Strava athlete <a href='https://www.strava.com/athletes/9358920' target='_blank'>#9358920</a></em></p>
         </div>",
         '#weight' => -6,
       );

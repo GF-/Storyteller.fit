@@ -84,6 +84,9 @@
       } // end if
 
 
+    // Votes: changing the 'title' to the upvote link
+    // $('a.rate-button').attr('title', 'Let the author know you liked the story');
+
       
     // Sticky user info
 

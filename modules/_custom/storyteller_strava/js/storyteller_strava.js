@@ -2,9 +2,6 @@
   Drupal.behaviors.activities = {
     attach: function (context, settings) {
 
-      // Disable ENTER key on INPUT fields but textareas. This is to avoid unintentional form submit
-      // window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName === 'INPUT' && e.target.type !== 'textarea'){e.preventDefault();return false;}}},true);
-
       // Activities object from module
       var activities = Drupal.settings.storyteller_strava.activities;
 
@@ -560,7 +557,133 @@
       if ($('#edit-comment-1').is(':checked')) {
         $('#no-comments').attr('checked', true);
       }
+     
+
+
+    // Embed from URL: Videos and remote pictures
+
+      // This enables drag-drop for items loaded on the right sidebar (videos or pics), and tells CKEditor what html to 'drop' on the editor
+
+        // Enable CKEditor drag-drop for this object
+          document.getElementById( 'video-embed' ).addEventListener( 'dragstart', function drag( $evt ) {
+              var evt = { data: { $: $evt } }; // Create CKEditor event.
+
+              // Create data transfer facade so we can set custom data types (like 'commet').
+              CKEDITOR.plugins.clipboard.initDragDataTransfer( evt );
+              evt.data.dataTransfer.setData( 'video-embed', true );
+
+              // Html to be dropped
+              var video_embed_content = $('#video-embed').html();
+
+              // Some text need to be set, otherwise drop event will not be fired.
+              evt.data.dataTransfer.setData( 'text/html', video_embed_content );
+          } );
+
+      var videoEmbed = {
+          // What happens when the function is invoked
+          invoke: function(){
+              $(".input-xchange").html($('#edit-field-embed-link-und-0-url').val());
+              $(".input-xchange").html(function(i, html) {
+                // Embed the video on sidebar
+                $('#video-embed').html('<div class="video-embed-overlay"></div>' + videoEmbed.convertMedia(html) );
+              });
+              
+          },
+          // Converts URLs to embedded items
+          convertMedia: function(html){
+              var pattern1 = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
+              var pattern2 = /(?:http?s?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g;
+              var pattern3 = /([-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?(?:jpg|jpeg|gif|png))/gi;
+              var pattern4 = /(?:http?s?:\/\/)?(?:www\.)?(?:relive\.cc)\/(?:view\/)?(.+)/g;
+              
+              if(pattern1.test(html)){
+                 var replacement = '<div class="video-wrapper"><iframe width="420" height="345" src="//player.vimeo.com/video/$1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+                 
+                 var html = html.replace(pattern1, replacement);
+              }
+              if(pattern2.test(html)){
+                    var replacement = '<iframe class="video" width="420" height="345" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>';
+                    var html = html.replace(pattern2, replacement);
+              } 
+              if(pattern3.test(html)){
+                  var replacement = '<a href="$1" target="_blank"><img class="sml" src="$1" /></a><br />';
+                  var html = html.replace(pattern3, replacement);
+              } 
+              if(pattern4.test(html)){
+                  var replacement = '<video controls><source src="https://relive.cc/view/$1/mp4?x-ref=tc" type="video/mp4"></video>';
+                  var html = html.replace(pattern4, replacement);
+              } 
+              
+              return html;
+          }
+      }
+
+      // Placeholder on Embed Link field
+      $("#edit-field-embed-link-und-0-url").attr('placeholder', 'http://');
+
+      // On page load: if Embed Link field is not empty, invoke the embed function
+      if ( $("#edit-field-embed-link-und-0-url").val() ) {
+        videoEmbed.invoke();
+      }      
+
+      // Embed Link field: on keyup, call video convert function + JS validation
+      $("#edit-field-embed-link-und-0-url").keyup(function(){
+          // Validation: if not empty or not an URL, return message
+          if ( $("#edit-field-embed-link-und-0-url").val().length === 0 || (/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test($("#edit-field-embed-link-und-0-url").val()))){
+            // Empty validation message
+            $('.input-video-validation').html("");
+            $('#video-embed').show();
+          } else {
+            // Return validation message
+            $('.input-video-validation').html("It does not look like a URL");
+            $('#video-embed').hide();
+          }
+          videoEmbed.invoke();
+        }).keypress(function(e) { // Disable enter key on Embed Link field
+          return e.which !== 13;
+      });
+
+
+
+      // On submit - test setting lang
+      $('#edit-submit').click(function(){
       
+         // Getting value from CKEditor and stripping html
+         var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
+         var cke_text = $(cke_html).text();
+
+       // Setting the language
+
+           // Franc does its job
+           lang = franc(cke_text, {'minLength': 200});
+
+           // Set value on languages field select
+           $('#edit-field-language-und').val(lang);
+
+
+        // Fetching the first img in the html
+
+           var img_url = $(cke_html).find('img:first').attr('src');
+           if (img_url !== undefined) {
+              
+              // Remove paramaters from URL
+              var index = 0;
+              var img_url_clean = img_url;
+              index = img_url.indexOf('?');
+              if(index == -1){
+                  index = img_url.indexOf('#');
+              }
+              if(index != -1){
+                  img_url_clean = img_url.substring(0, index);
+              }
+              
+              // Setting value in the field
+              $('#edit-field-cover-image-und-0-value').val(img_url_clean);
+            }
+        });
+
+
+
 
 
     }
