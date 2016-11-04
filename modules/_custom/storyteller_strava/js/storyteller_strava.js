@@ -28,7 +28,6 @@
           // For activities select
           function activities_select_date(startdate) {
             var date = startdate.slice(0,-10);
-            // console.log(date);
             return date;
           }
 
@@ -73,6 +72,9 @@
             var km = meters / 1000;
             km = km.toFixed(1);
             return km;
+          }
+          function mtoMiles(meters) {
+            return meters * 0.000621371192;
           }
 
         // Pace
@@ -166,9 +168,43 @@
 
         // If IE, empty the right sidebar
           if(detectIE()) {
-            // $('.node-column-sidebar-right').html('<p><strong>Drag-and-drop</strong> images and maps functionality does not work on Internet Explorer.');
-            $('.node-column-sidebar-right').empty();
+            $('.node-column-sidebar-right').addClass('IE');
+            $('.node-column-sidebar-right p.mobile-hidden').html('<p><strong>Click to insert</strong> pictures and maps into your story</p>');
+
+            // Click n drop
+
+            $('.photos, .map, .field-type-image, #video-embed').unbind().bind("DOMSubtreeModified", function(){
+              
+              $('.photos img, .map img, .field-type-image img, #video-embed').unbind().click(function() {
+                var todrop = $(this)[0].outerHTML;
+                console.log ('ugh');
+                CKEDITOR.instances['edit-body-und-0-value'].insertHtml(todrop);
+              });
+
+            });
           };
+
+
+        // On Mobile - until 1040px? iPad landscape included
+        var isMobile = window.matchMedia("only screen and (max-width: 1040px)");
+
+        if (isMobile.matches) {
+
+            // Click n drop
+
+            $('.photos, .map, .field-type-image').unbind().bind("DOMSubtreeModified", function(){
+              
+              if ($('.map img').length) {
+                $('.node-column-sidebar-right p.mobile').html('<pclass="mobile">Tap on a picture<br />to embed it</p>');  
+              }
+
+              $('img').unbind().click(function() {
+                var todrop = $(this)[0].outerHTML;
+                CKEDITOR.instances['edit-body-und-0-value'].insertHtml(todrop + '<br />');
+              });
+
+            });
+        }
 
 
         // Set Title, if empty assign default
@@ -564,6 +600,10 @@
 
       // This enables drag-drop for items loaded on the right sidebar (videos or pics), and tells CKEditor what html to 'drop' on the editor
 
+      // Causes conflict on IE, we drop it
+
+        if(!detectIE()) {
+
         // Enable CKEditor drag-drop for this object
           document.getElementById( 'video-embed' ).addEventListener( 'dragstart', function drag( $evt ) {
               var evt = { data: { $: $evt } }; // Create CKEditor event.
@@ -578,6 +618,8 @@
               // Some text need to be set, otherwise drop event will not be fired.
               evt.data.dataTransfer.setData( 'text/html', video_embed_content );
           } );
+
+        }
 
       var videoEmbed = {
           // What happens when the function is invoked
@@ -645,8 +687,9 @@
 
 
 
-      // On submit - test setting lang
-      $('#edit-submit').click(function(){
+      // On Publish or Update: set Cover image, and Language
+
+      $('#edit-submit, .draft-button').click(function(){
       
          // Getting value from CKEditor and stripping html
          var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
@@ -667,23 +710,20 @@
            if (img_url !== undefined) {
               
               // Remove paramaters from URL
-              var index = 0;
-              var img_url_clean = img_url;
-              index = img_url.indexOf('?');
-              if(index == -1){
-                  index = img_url.indexOf('#');
-              }
-              if(index != -1){
-                  img_url_clean = img_url.substring(0, index);
-              }
+              // var index = 0;
+              // var img_url_clean = img_url;
+              // index = img_url.indexOf('?');
+              // if(index == -1){
+              //     index = img_url.indexOf('#');
+              // }
+              // if(index != -1){
+              //     img_url_clean = img_url.substring(0, index);
+              // }
               
               // Setting value in the field
-              $('#edit-field-cover-image-und-0-value').val(img_url_clean);
+              $('#edit-field-cover-image-und-0-value').val(img_url);
             }
         });
-
-
-
 
 
     }

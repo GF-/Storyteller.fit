@@ -19,7 +19,8 @@
 15.Messages
 16.Custom
 17.Comments
-18. Votes
+18.Votes
+19.IE
 
 ++.Breakpoints
 
@@ -1383,7 +1384,8 @@ img {
 
 
     /* Sidebar right: Photos */
-    .story-columns .node-column-sidebar-right .photos img {
+    .story-columns .node-column-sidebar-right .photos img,
+    .story-columns .node-column-sidebar-right .map img {
       max-width: 100%; /*calc(50% - .6rem);*/
       height: auto;
       display: inline-block;
@@ -1602,10 +1604,7 @@ div.status.messages {
     .how-it-works video {
       display: block;
       margin: 0 auto;
-      padding: 1rem;    
       background: #e8e8e8;
-      border-radius: 10px;
-      border: 1px solid #c0c0c0;
     }
 
 
@@ -1624,6 +1623,12 @@ div.status.messages {
   .fb-share-button {
     margin-right: .5rem;
     margin-bottom: .5rem
+  }
+
+
+  /* User data */
+  #user-data {
+    display: none;
   }
 
 
@@ -1949,6 +1954,33 @@ div.status.messages {
 
 
 
+/**
+ * 19.IE
+ *
+ */
+
+ .story-columns .node-column-sidebar-right.IE.sticky{
+  z-index: 0;
+ }
+
+.story-columns .node-column-sidebar-right.IE img {
+  cursor: pointer !important;
+ }
+
+
+ .story-columns .node-column-sidebar-right.IE .field-type-image,
+ .story-columns .node-column-sidebar-right.IE .field-type-image img {
+  width: 100%;
+ }
+
+  /* Hiding the video field (incompatible CKeditor JS, it breaks IE) */
+  .node-column-sidebar-right.IE .field-type-link-field {
+    display: none;
+  }
+
+  .node-column-sidebar-right.IE .form-file-wrapper:before {
+      top: 1.4rem;
+    }
 
 
 
@@ -2126,9 +2158,9 @@ div.status.messages {
           padding-bottom: 4rem;
         }
         .node-type-story .node-column-sidebar-right.padding {
-          margin-top: -5rem;
+          /*margin-top: -5rem;
           padding: 1rem 1.5rem;
-          background: #fafafa;
+          background: #fafafa;*/
         }
 
       /* Language icon on node Story */
@@ -2330,14 +2362,21 @@ div.status.messages {
       max-height: 15rem;
       overflow: hidden;
     }
-      .stories-list-medium img {
-        
+      .stories-list-medium .img-wrapper img {
+        margin-top: -16%; /* This kinda centers the image */
       }
 
-    /* On user page: margin top; */
+    /* On user page */
     body.page-user .stories-list-medium {
       margin-top: 2rem;
     }
+
+    body.page-user .stories-list-medium .draft-edit {
+      margin-top: .5rem;
+    }
+      body.page-user .stories-list-medium .draft-edit span {
+        color: orangered;
+      }
 
   /* Hiding 'state' on mobile */
   span.state {
@@ -2429,8 +2468,69 @@ div.status.messages {
    */
 
    form .story-columns .node-column-sidebar-right {
-    display: none;
+    /*display: none;*/
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    padding: .125rem 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    z-index: 2;
+    white-space: nowrap; /* Important so that it can scroll horizontally */
+
+    background: #fafafa;
+    box-shadow: 0px 0px 0px 1px #ccc;
    }
+
+    .story-columns .node-column-sidebar-right p,
+    .story-columns .node-column-sidebar-right .photos,
+    .story-columns .node-column-sidebar-right .map {
+      display: inline-block;
+      vertical-align: middle;
+    }
+      .story-columns .node-column-sidebar-right p {
+        margin: 0 1rem 0 0;
+      }
+
+      .story-columns .node-column-sidebar-right p.mobile-hidden {
+        display: none;
+      }
+
+    .story-columns .node-column-sidebar-right .photos img,
+    .story-columns .node-column-sidebar-right .map img,
+    .story-columns .node-column-sidebar-right .field-type-image img {
+      height: 3.5rem;
+      display: inline-block;
+      margin-right: 0.25rem;
+      margin-bottom: 0;
+    }
+
+    .story-columns .node-column-sidebar-right .field-type-image .form-item, /* Upload button, not uploaded images (f.ex. from desktop) */
+    .story-columns .node-column-sidebar-right .field-type-link-field, /* Video link */
+    .story-columns .node-column-sidebar-right .embeds /* Video render */ {
+      display: none;
+    }
+
+    .story-columns .node-column-sidebar-right .field-type-image {
+      display: inline-block;
+      vertical-align: middle;
+      height: 60px;
+    }
+
+    .story-columns .node-column-sidebar-right .field-type-image table,
+    .story-columns .node-column-sidebar-right .field-type-image tr {
+      display: inline-table;
+      margin-bottom: 0;
+    }
+      .story-columns .node-column-sidebar-right .field-type-image td:nth-child(3n+3) {
+        display: none;
+      }
+
+
+
 
 
   /**
@@ -2445,8 +2545,8 @@ div.status.messages {
       max-width: 35rem;
     }
       .how-it-works video {
-        width: 100%;
-        max-width: 100%;
+        width: calc(100% + 4rem);
+        margin-left: -2rem;
       }
 
   /* Green promotional circle */
@@ -2599,15 +2699,6 @@ div.status.messages {
     right: 0;
   }
   
-
-  /**
-   * 16.CUSTOM
-   */
-
-      .how-it-works video {
-        width: calc(100% - 6rem);
-        max-width: calc(100% - 6rem);
-      }
 
 
 }
@@ -2830,6 +2921,12 @@ div.status.messages {
       padding-right: 0;
     }
 
+      .how-it-works video {
+        width: calc(100% + 10rem);
+        margin-left: -5rem;
+      }
+
+
 
   /**
    * 17.Comments
@@ -2956,11 +3053,19 @@ div.status.messages {
           }
 
 
+
     /* Story node form: Sidebar right */
-      .story-columns .node-column-sidebar-right {
+      form .story-columns .node-column-sidebar-right {
+        position: static;
         width: 19rem;
+        height: auto;
+        padding: 0;
         z-index: 1;
         overflow-x: hidden;
+        overflow-y: auto;
+        background: transparent;
+        box-shadow: none;
+        white-space: normal;
       }
       .story-columns .node-column-sidebar-right .sidebar-inner-right {
         width: 18rem;
@@ -2969,6 +3074,55 @@ div.status.messages {
         overflow: auto;
         background-color: #f2f2f2;
       }
+
+
+      /* Restore from mobile status */
+      .story-columns .node-column-sidebar-right .field-type-image .form-item, /* Upload button, not uploaded images (f.ex. from desktop) */
+      .story-columns .node-column-sidebar-right .field-type-link-field, /* Video link */
+      .story-columns .node-column-sidebar-right .embeds /* Video render */ {
+        display: block;
+      }
+      .story-columns .node-column-sidebar-right p,
+      .story-columns .node-column-sidebar-right .photos,
+      .story-columns .node-column-sidebar-right .map {
+        display: block;
+      }
+        .story-columns .node-column-sidebar-right p.mobile {
+          display: none;
+        }
+        .story-columns .node-column-sidebar-right p {
+          margin: 1rem 0;
+        }
+          .story-columns .node-column-sidebar-right p.mobile-hidden {
+            display: block;
+          }
+
+      .story-columns .node-column-sidebar-right .photos img,
+      .story-columns .node-column-sidebar-right .map img,
+      .story-columns .node-column-sidebar-right .field-type-image img {
+        height: auto;
+        display: block;
+        margin-right: 0;
+        margin-bottom: .3rem;
+      }
+
+
+    .story-columns .node-column-sidebar-right .field-type-image {
+      display: block;
+      height: auto;
+    }
+
+    .story-columns .node-column-sidebar-right .field-type-image table {
+      display: table;
+    }
+    .story-columns .node-column-sidebar-right .field-type-image tr {
+      display: table-row;
+    }
+      .story-columns .node-column-sidebar-right .field-type-image td:nth-child(3n+3) {
+        display: table-cell;
+      }
+
+
         /* Sticky: anchor */
         .sticky-anchor {
           display: block;
@@ -3186,8 +3340,8 @@ div.status.messages {
 
   /* Video and Laptop */
     .how-it-works {
-      width: 100%;
-      max-width: auto;
+      width: 45rem;
+      max-width: 45rem;
     }
 
     .how-it-works:after {
@@ -3202,6 +3356,13 @@ div.status.messages {
       border: 1px solid #c0c0c0;
     }
 
+    .how-it-works video {
+        width: calc(100% - 5rem);
+        padding: 1rem;
+        border-radius: 10px;
+        border: 1px solid #c0c0c0;
+        margin-left: auto;
+    }
 
     /**
      * 17.Comments
