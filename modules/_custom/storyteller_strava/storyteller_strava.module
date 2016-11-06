@@ -142,6 +142,8 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
     $profile->field_measurement[LANGUAGE_NONE][0]['value'] = $athlete['measurement_preference'];
     
 
+    $_SESSION['measurement_preference'] = $athlete['measurement_preference'];
+
 /*
     foreach($activities as $key => $item){
       dpm($item['name']);

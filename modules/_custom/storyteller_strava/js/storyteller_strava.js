@@ -7,6 +7,10 @@
 
       var token = Drupal.settings.storyteller_strava.token;
 
+      var measurement_preference = Drupal.settings.storyteller_strava.measurement_preference;
+
+      console.log (measurement_preference);
+
 
       
       // Functions manipulating Strava data
@@ -34,6 +38,13 @@
         // Converting m/s to km/h
           function ms2kmh(avg_speed) {
             var avg_speed = avg_speed * 3.60;
+            // rounded
+            avg_speed = Math.round( avg_speed * 10 ) / 10;
+            return avg_speed;
+          }        
+        // Converting m/s to miles/h
+          function ms2mph(avg_speed) {
+            var avg_speed = avg_speed * 2.236936292;
             // rounded
             avg_speed = Math.round( avg_speed * 10 ) / 10;
             return avg_speed;
@@ -74,7 +85,9 @@
             return km;
           }
           function mtoMiles(meters) {
-            return meters * 0.000621371192;
+            var miles = meters * 0.000621371192;
+            miles = miles = miles.toFixed(1);
+            return miles;
           }
 
         // Pace
@@ -89,6 +102,17 @@
               }
             return pace_minutes + ':' + pace_seconds;
           }
+          function pace_mi(moving_time, distance) {
+            var pace_decimal = (moving_time/60)/(distance/1609.344);
+            var pace_minutes = (Math.floor(pace_decimal));
+            var pace_seconds = (Math.round((pace_decimal % 1) * 60));
+              if (pace_seconds < 10) {
+                pace_seconds = '0' + pace_seconds;
+              }
+            return pace_minutes + ':' + pace_seconds;
+          }
+
+          
 
         // Photos
           function getPhotos(activity_id) {
@@ -169,7 +193,7 @@
         // If IE, empty the right sidebar
           if(detectIE()) {
             $('.node-column-sidebar-right').addClass('IE');
-            $('.node-column-sidebar-right p.mobile-hidden').html('<p><strong>Click to insert</strong> pictures and maps into your story</p>');
+            $('.node-column-sidebar-right p.mobile-hidden').html('<p><strong>Click to insert</strong> pictures and maps and videos into your story</p>');
 
             // Click n drop
 
@@ -291,16 +315,35 @@
           $('.node-column-sidebar-left .moving-time').html('<span class="small light-grey">Moving time</span><br />' + secondsToHms($('#edit-field-moving-time-und-0-value').val()));
 
           // Distance
-          $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
+          // $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
+          } else {
+            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoMiles($('#edit-field-distance-und-0-value').val()) + ' mi');
+          }
 
           // Pace
-          $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/km');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/km');
+          } else {
+            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/mi');
+          }
 
           // Avg Speed
-          $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh($('#edit-field-average-speed-und-0-value').val()) + ' km/h');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh($('#edit-field-average-speed-und-0-value').val()) + ' km/h');
+          } else {
+            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph($('#edit-field-average-speed-und-0-value').val()) + ' mi/h');
+          }
 
           // Elevation
-          $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + $('#edit-field-elevation-und-0-value').val() + ' m');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + $('#edit-field-elevation-und-0-value').val() + ' m');
+          } else {
+            var elevation_ft = $('#edit-field-elevation-und-0-value').val() * 3.2808399;
+            elevation_ft = Math.round( elevation_ft * 1 ) / 1;
+            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + elevation_ft + ' ft');
+          }
 
           // Photos
           if ($('#edit-field-total-photo-count-und-0-value').val() != 0) {
@@ -404,29 +447,48 @@
           $('#edit-field-distance-und-0-value').val(activities[$(this).val()]['distance']);
           
           // Printing readable value on sidebar
-          $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm(activities[$(this).val()]['distance']) + ' km');
-
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm(activities[$(this).val()]['distance']) + ' km');
+          } else {
+            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoMiles(activities[$(this).val()]['distance']) + ' mi');
+          }
 
         // Pace
           // Same value on sidebar and form field
           $('#edit-field-pace-und-0-value').val(pace(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/km');
+
           // Printing readable value on sidebar
-          $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/km');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/km');
+          } else {
+            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/mi');
+          }
 
         // Average speed
           // Value in form field
           $('#edit-field-average-speed-und-0-value').val(activities[$(this).val()]['average_speed']);
           
-          // Printing readable value on sidebar
-          $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh(activities[$(this).val()]['average_speed']) + ' km/h');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            // Printing readable value on sidebar
+            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh(activities[$(this).val()]['average_speed']) + ' km/h');
+          } else {
+            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph(activities[$(this).val()]['average_speed']) + ' mi/h');
+          }
 
 
         // Elevation
           // Value in form field
           $('#edit-field-elevation-und-0-value').val(activities[$(this).val()]['total_elevation_gain']);
 
-          // Printing readable value on sidebar
-          $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + activities[$(this).val()]['total_elevation_gain'] + ' m');
+          if ( $('#user-data .measurement').text() == 'meters' ) {
+            // Printing readable value on sidebar
+            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + activities[$(this).val()]['total_elevation_gain'] + ' m');
+          } else {
+            var elevation_ft = activities[$(this).val()]['total_elevation_gain'] * 3.2808399;
+            elevation_ft = Math.round( elevation_ft * 1 ) / 1;
+            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + elevation_ft + ' ft');
+
+          }
 
 
         // Photos
