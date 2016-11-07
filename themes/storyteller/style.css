@@ -140,7 +140,7 @@ h2, .h2 {
   h2#site-slogan,
   header .call-action {
     font-family: Georgia, Times, "Times New Roman", serif;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     font-weight: normal;
     text-align: center;
     /* Invisible on normal pages */
@@ -948,6 +948,7 @@ img {
     margin-top: 2rem;
   }
     .more-link a {
+      font-size: 1.375rem;
       color: orangered;
     }
       .more-link a:after {
