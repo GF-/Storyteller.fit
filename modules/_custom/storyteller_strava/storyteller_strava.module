@@ -139,9 +139,8 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
     $profile->field_city[LANGUAGE_NONE][0]['value'] = $athlete['city'];
     $profile->field_state[LANGUAGE_NONE][0]['value'] = $athlete['state'];
     $profile->field_country[LANGUAGE_NONE][0]['value'] = $athlete['country'];
-    $profile->field_measurement[LANGUAGE_NONE][0]['value'] = $athlete['measurement_preference'];
     
-
+    // No need to save measurement user preference, we just store it in session on login. The value is printed on the template, page.tpl.php #user-data
     $_SESSION['measurement_preference'] = $athlete['measurement_preference'];
 
 /*

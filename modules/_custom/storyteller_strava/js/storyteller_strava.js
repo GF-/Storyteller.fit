@@ -7,11 +7,6 @@
 
       var token = Drupal.settings.storyteller_strava.token;
 
-      var measurement_preference = Drupal.settings.storyteller_strava.measurement_preference;
-
-      console.log (measurement_preference);
-
-
       
       // Functions manipulating Strava data
       
@@ -24,7 +19,6 @@
 
           function readable_time(startdate) {
             var time = new Date(Date.parse(startdate)).toUTCString();
-            console.log(time);
             time = time.slice(17,-7);
             return time;
           }
@@ -118,8 +112,6 @@
           function getPhotos(activity_id) {
               // Calling photos json: providing token and size
               $.getJSON( "https://www.strava.com/api/v3/activities/" + activity_id +"/photos?photo_sources=true&size=800&access_token=" + token + "&callback=?", function (photos) {
-                
-                // console.log (photos[0]['urls'][800]);
 
                 // First empty the element
                 $('.node-column-sidebar-right .photos').empty();
@@ -127,7 +119,6 @@
                 // Loop, working
                 for(var key in photos) {
                     if (photos.hasOwnProperty(key)) {
-                        // console.log (photos[key].urls[800]);
                         $('.node-column-sidebar-right .photos').append('<img src="' + photos[key].urls[800] + '" />');
                     }
                 }
@@ -201,7 +192,6 @@
               
               $('.photos img, .map img, .field-type-image img, #video-embed').unbind().click(function() {
                 var todrop = $(this)[0].outerHTML;
-                console.log ('ugh');
                 CKEDITOR.instances['edit-body-und-0-value'].insertHtml(todrop);
               });
 
@@ -268,10 +258,51 @@
           } else {
             $('.draft-button').html('Publish');
             $('.draft-button').click(function() {
+
+            // First, set Cover image + set Language
+            
+               // Getting value from CKEditor and stripping html
+               var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
+               var cke_text = $(cke_html).text();
+
+            // Setting the language
+
+               // Franc does its job
+               lang = franc(cke_text, {'minLength': 200});
+
+               // Set value on languages field select
+               $('#edit-field-language-und').val(lang);
+
+
+            // Fetching the first img in the html
+
+               var img_url = $(cke_html).find('img:first').attr('src');
+               if (img_url !== undefined) {
+                  
+                  // Remove paramaters from URL
+                  // var index = 0;
+                  // var img_url_clean = img_url;
+                  // index = img_url.indexOf('?');
+                  // if(index == -1){
+                  //     index = img_url.indexOf('#');
+                  // }
+                  // if(index != -1){
+                  //     img_url_clean = img_url.substring(0, index);
+                  // }
+                  
+                  // Setting value in the field
+                  $('#edit-field-cover-image-und-0-value').val(img_url);
+                }
+
                // On submit, check if Title-textarea is set: if so, copy value to #edit-title . If not, set default value
-               setTitle();
-               $('#edit-status').attr('checked', true); 
-               $('#story-node-form').submit();
+                 setTitle();
+                 
+               // Set Published
+                 $('#edit-status').attr('checked', true); 
+               
+               // Finally submit
+                 $('#story-node-form').submit();
+
             });
           }
 
@@ -746,46 +777,6 @@
         }).keypress(function(e) { // Disable enter key on Embed Link field
           return e.which !== 13;
       });
-
-
-
-      // On Publish or Update: set Cover image, and Language
-
-      $('#edit-submit, .draft-button').click(function(){
-      
-         // Getting value from CKEditor and stripping html
-         var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
-         var cke_text = $(cke_html).text();
-
-       // Setting the language
-
-           // Franc does its job
-           lang = franc(cke_text, {'minLength': 200});
-
-           // Set value on languages field select
-           $('#edit-field-language-und').val(lang);
-
-
-        // Fetching the first img in the html
-
-           var img_url = $(cke_html).find('img:first').attr('src');
-           if (img_url !== undefined) {
-              
-              // Remove paramaters from URL
-              // var index = 0;
-              // var img_url_clean = img_url;
-              // index = img_url.indexOf('?');
-              // if(index == -1){
-              //     index = img_url.indexOf('#');
-              // }
-              // if(index != -1){
-              //     img_url_clean = img_url.substring(0, index);
-              // }
-              
-              // Setting value in the field
-              $('#edit-field-cover-image-und-0-value').val(img_url);
-            }
-        });
 
 
     }
