@@ -93,20 +93,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     header .button {
       float: right;
       margin-top: 8px;
+      padding: .4rem .6rem;
+      font-size: 1.0625rem;
     }
-      body.front header .button {
-        float: none;
-        margin-top: 1rem;
-        margin-bottom: 2rem;
-      }
 
       /* Better than doing it with JS I guess.. */
-      body.not-front header .button.orange.full {
+      header .button.orange.full {
         border-color: transparent;
         color: orangered;
         background: transparent;
       }
-        body.not-front header .button.orange.full:hover {
+        header .button.orange.full:hover {
           border-color: orangered;
           -webkit-box-shadow: none;
           -moz-box-shadow: none;
@@ -137,23 +134,11 @@ h2, .h2 {
         margin-bottom: 3rem;
       }
 
-  h2#site-slogan,
-  header .call-action {
+  #container h2#site-slogan p {
     font-family: Georgia, Times, "Times New Roman", serif;
-    font-size: 1.25rem;
     font-weight: normal;
     text-align: center;
-    /* Invisible on normal pages */
-    visibility: hidden;
-    position: absolute;
-    left: -1000rem;
   }
-    body.front h2#site-slogan,
-    header .call-action {
-      visibility: visible;
-      position: static;
-      left: 0;
-    }
 
 h3, .h3 {
   margin-top: 1.2em;
@@ -289,9 +274,6 @@ em {
   padding-top: 3.75rem;
   padding-bottom: 10rem;
 }
-  body.front #container {
-    margin-top: 0;
-  }
 
 
 /* Story node: layout */
@@ -406,12 +388,6 @@ body.sidebar-second #sidebar-second {
   border-bottom: 1px solid #eee;
   z-index: 2;
 }
-  body.front #header {
-    position: relative;
-    text-align: center;
-    height: auto;
-  }
-
 
 #header #logo {
   display: block;
@@ -421,18 +397,12 @@ body.sidebar-second #sidebar-second {
       display: none;
     }
 
-
   /* Front page logo */
-  body.front #header #logo {
-    margin: 2.5rem auto 2em auto;
-    float: none;
-  }
     body.front #header #logo img.logo-front {
-      width: 15rem;
-      margin-left: 2rem;
+      display: none;
     }
     body.front #header #logo img.logo-small {
-      display: none;
+      /*display: none;*/
     }
 
 
@@ -470,9 +440,6 @@ body.sidebar-second #sidebar-second {
   text-decoration: none;
 }
 
-#header #site-slogan {
-  margin: 0;
-}
 
 /* Login with Strava */
 
@@ -512,7 +479,7 @@ body.sidebar-second #sidebar-second {
   line-height: 60px;
 }
   body.front #navigation {
-    float: none;
+/*    float: none;*/
   }
 
   /* Main menu*/
@@ -1210,10 +1177,6 @@ img {
       transition: .2s all ease-out;
       -webkit-transition: .2s all ease-out;
     }
-      body.front .button {
-        padding: .4rem .6rem;
-        font-size: 1.0625rem;
-      }
 
       form input[type=submit]#edit-submit {
         /*margin-right: 1.5rem;*/
@@ -2001,9 +1964,24 @@ div.status.messages {
       display: none;
    }
 
-   #header #site-slogan {
-    margin: 0 2rem;
+   #site-slogan {
+    margin: 2rem;
    }
+
+    #container h2#site-slogan p {
+      font-size: 20px;
+    }
+    #container h2#site-slogan .call-action {
+      padding-bottom: .5rem;
+    }
+    
+    #site-slogan .login-strava { /* the Strava login button */
+      width: 14rem;
+    }
+
+    body.strava-user #site-slogan { /* Logged in user */
+      text-align: center;
+    }
 
 
   h1, .h1 {
@@ -2184,7 +2162,7 @@ div.status.messages {
    * 5.HEADER
    */
 
-    body.not-front #header #logo img.logo-small {
+    body #header #logo img.logo-small {
       width: 7rem;
       margin-top: .6rem;
       margin-left: .8rem;
@@ -2612,16 +2590,40 @@ div.status.messages {
 }
 @media (min-width:30.063em) { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
 
+
+  /**
+   * 1.GLOBAL
+   *
+   */
+
+   #site-slogan {
+    margin: 3rem auto;
+    max-width: 30rem;
+   }
+
+    #container h2#site-slogan p {
+      font-size: 1.5625rem;
+    }
+    #site-slogan .login-strava { /* the Strava login button */
+      width: 14rem;
+      padding-top: 5px;
+    }
+
+
   /**
    * 2.LAYOUT
    *
    */
 
-       /* Story node form: Sidebar right */
-        .story-columns .node-column-sidebar-right .athlete-info{
-          max-width: none;
-        }
+      /* Front page */
+      body.front #container {
+        padding-top: 3.75rem;
+      }
 
+     /* Story node form: Sidebar right */
+      .story-columns .node-column-sidebar-right .athlete-info{
+        max-width: none;
+      }
 
       /* Static pages */
       body #main .static-page {
@@ -2643,14 +2645,9 @@ div.status.messages {
     padding: 0 1rem;
    }
 
-  /* Front page logo */
-  body.front #header #logo {
-    margin-top: 5rem;
+   header .button {
+      margin-right: .5rem;
   }
-
-     body.not-front header .button {
-        margin-right: .5rem;
-    }
 
 
   /**
@@ -2709,13 +2706,14 @@ div.status.messages {
    * 1.GLOBAL
    */
 
-  #header #site-slogan {
-    margin: 0;
+   #site-slogan {
+    max-width: 35rem;
    }
 
-     h2#site-slogan span {
-      display: block;
-     }
+    #container h2#site-slogan p {
+      font-size: 1.875rem;
+    }
+
 
   h1, .h1 {
       font-size: 1.75em;
@@ -3196,7 +3194,7 @@ div.status.messages {
    * 5.HEADER
    */
 
-    body.not-front #header #logo img.logo-small {
+    body #header #logo img.logo-small {
       width: 14.5rem;
       margin-left: 0;
       margin-top: .5rem;
