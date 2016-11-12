@@ -42,14 +42,35 @@
 
       }
 
+      // Sticky exposed filters
       if ($('.sticky-views-anchor').length) {
+        $(function() {
+            $(window).scroll(sticky_relocate);
+            sticky_relocate();
+        });
+      }
 
-      $(function() {
-          $(window).scroll(sticky_relocate);
-          sticky_relocate();
+
+
+    // Login button: ajax call to set a redirection
+     $('.add-story').click(function(){
+       $.ajax({
+          url: "/storyteller-login",
+          type: "post",
+          // data: values ,
+          success: function (response) {
+             // you will get response from your php page (what you echo or print)
+             console.log(response);
+             window.location.href = '/user/strava-login';
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+             console.log(textStatus, errorThrown);
+          }
+        });
+        return false;
       });
 
-      }
+
 
 
     }

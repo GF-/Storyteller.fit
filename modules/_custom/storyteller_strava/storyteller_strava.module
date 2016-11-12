@@ -21,6 +21,32 @@ define('STRAVA_API_URL', 'https://www.strava.com/api/v3/');
 // Define Strava API Webhooks URL
 define('STRAVA_API_WEBHOOK_URL', 'https://api.strava.com/api/v3/');
 
+
+
+/**
+ * Implements hook_menu().
+ */
+function storyteller_strava_menu () {
+  $items['storyteller-login'] = array(
+    'title' => 'Login with Strava',
+    'page callback' => 'storyteller_login_callback',
+    'access callback' => true,
+  );
+  return $items;
+}
+
+function storyteller_login_callback () {
+  $_SESSION['strava_auth_destination'] = url('node/add/story', array(
+      'absolute' => true,
+  ));
+  //$_SESSION['strava_auth_ajax'] = TRUE;
+
+  //watchdog('gf', '<pre>'. print_r($_SESSION,1).'</pre>' );
+  //drupal_goto('user/strava-login');
+}
+
+
+
 /**
  * Implementation of hook_init().
  */
@@ -157,14 +183,23 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
 
     // Redirection
     // This is redirection without login on Strava externally (aka user was already logged in strava in browser)
-    $drupal_referer = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : $_SESSION['strava_auth_destination'];
+    
+    // $drupal_referer = $_SERVER["HTTP_REFERER"] ? $_SERVER["HTTP_REFERER"] : $_SESSION['strava_auth_destination'];
+    $drupal_referer = $_SESSION['strava_auth_destination'] ? $_SESSION['strava_auth_destination'] : $_SERVER["HTTP_REFERER"];
+
+     // watchdog('TEST REFERER', '<pre>' .print_r($_SESSION, 1) .'</pre>');
+
     if ($drupal_referer) {
       $referer = str_replace($base_url, '', $drupal_referer);
       $path = drupal_get_normal_path(ltrim($referer, '/')); 
       $chunks = explode('/', $path);
     
+      dpm($path);
+
       if (is_array($chunks)) {
         if (($chunks[0] == 'node' && is_numeric($chunks[1])) || $chunks[0] == 'stories') {
+          drupal_goto($path);
+        } else if ($chunks[0] == 'node' && $chunks[1] == 'add') {
        
         /* 
         // A variation, uncomment and comment drupal_goto under if better filtering per node is needed or similar (i.e. only for story content type)
@@ -177,10 +212,14 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
         }
         */
         
-          drupal_goto($path);
+          // drupal_goto($path);
+          drupal_goto('/node/add/story');
+          
         }
         else {
-          drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
+          // drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
+          // drupal_goto('/node/add/story');
+          drupal_goto($path);
         }
       }
       else {

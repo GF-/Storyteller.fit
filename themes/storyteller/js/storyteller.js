@@ -173,8 +173,10 @@
       });
 
 
-    // Logged in user info data on Reply-to-Comment - **if threaded comments are enabled**
+    // If threaded comments are enabled
+    // Logged in user info data on Reply-to-Comment
       // $( ".comment-user-avatar" ).prependTo( "#comments .comment-form" );
+
 
     }
   }
