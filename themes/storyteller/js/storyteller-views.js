@@ -51,6 +51,13 @@
       }
 
 
+    // Hide image if link is broken
+    $("img").error(function () { 
+        $(this).css({visibility:"hidden"}); 
+    });
+
+
+    // HEADER
 
     // Login button: ajax call to set a redirection
      $('.add-story').click(function(){
