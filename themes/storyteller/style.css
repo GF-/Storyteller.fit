@@ -1961,11 +1961,6 @@ div.status.messages {
       display: none;
    }
 
-   #site-slogan {
-    margin: 1rem auto;
-    padding: .5rem 2rem 3rem 2rem;
-   }
-
     #container h2#site-slogan p {
       font-size: 20px;
     }
@@ -2014,6 +2009,25 @@ div.status.messages {
    * 2.LAYOUT
    */
 
+  /* Front page */
+  
+  #site-slogan {
+   margin: 1rem auto;
+   padding: .5rem 2rem 3rem 2rem;
+  }
+
+  body.front .intro-left {
+    display: block;
+  }
+
+  body.front .intro-right {
+    display: none;
+  }
+
+
+
+  /* Container */
+  
   #container {
     background-color: #ecefef; /*Darker on mobile*/
   }
@@ -2999,7 +3013,7 @@ div.status.messages {
 
 
   #site-slogan {
-    margin: 1rem auto 4rem 5.5rem;
+    margin: 2rem auto 4rem 5.5rem;
     padding-bottom: 0;
    }
 
@@ -3518,6 +3532,38 @@ div.status.messages {
       width: 1148px; /*Like Strava*/
     }
 
+    body.front .intro-left {
+      display: inline-block;
+      max-width: 592px; /*52%*/ /*37rem*/
+    }
+
+    body.front .intro-right {
+      display: inline-block;
+      max-width: 528px; /*47%*/ /*33rem*/
+      height: 304px;
+      margin-top: 3rem;
+      border: 10px solid #e5e5e5;
+      overflow: hidden;
+    }
+      #site-slogan {
+        margin: 2rem auto 4rem 0.5rem;
+       }
+
+      /* Cropping video */
+      body.front .intro-right video {
+        width: 592px; /*119%*/
+        margin-left: -75px; /*-16%*/
+      }
+
+      /* Internet explorer/EDGE */
+      body.front .intro-left.ie {
+        display: block;
+        margin: 2rem auto 4rem 5.5rem;
+      }
+      body.front .intro-right.ie {
+        display: none;
+      }
+
 
   /**
    * 5.HEADER
@@ -3526,10 +3572,6 @@ div.status.messages {
    #header {
     padding: 0;
    }
-     
-    body.not-logged-in header .button {
-      margin-right: 5rem;
-    }
      
 
   /**
