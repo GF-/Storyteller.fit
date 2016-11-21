@@ -2013,7 +2013,7 @@ div.status.messages {
   
   #site-slogan {
    margin: 1rem auto;
-   padding: .5rem 2rem 3rem 2rem;
+   padding: .5rem 2rem 2rem 2rem;
   }
 
   body.front .intro-left {
@@ -2749,7 +2749,7 @@ div.status.messages {
    }
 
     #container h2#site-slogan p {
-      font-size: 1.875rem;
+      font-size: 1.625rem;
     }
 
 
@@ -3014,8 +3014,13 @@ div.status.messages {
 
   #site-slogan {
     margin: 2rem auto 4rem 5.5rem;
+    max-width: 46rem;
     padding-bottom: 0;
    }
+
+     #container h2#site-slogan p {
+        font-size: 1.875rem;
+      }
 
 
   /**
@@ -3546,7 +3551,7 @@ div.status.messages {
       overflow: hidden;
     }
       #site-slogan {
-        margin: 2rem auto 4rem 0.5rem;
+        margin: 1rem auto 4rem 5rem;
        }
 
       /* Cropping video */
