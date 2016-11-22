@@ -50,16 +50,21 @@
         });
       }
 
-
     // Hide image if link is broken
     $("img").error(function () { 
         $(this).css({visibility:"hidden"}); 
     });
 
+    // Language: if English, just hide the data
+    $.each($("span.language"), function() {
+      if ($(this).text() == 'English') {
+        $(this).hide();
+      }
+    });
 
-    // HEADER
 
     // Login button: ajax call to set a redirection
+    // We place this here as Views are present in all the main pages
      $('.add-story').click(function(){
        $.ajax({
           url: "/storyteller-login",
