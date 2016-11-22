@@ -217,9 +217,9 @@ function storyteller_strava_strava_auth_user_login($user, $details, $accessToken
           
         }
         else {
-          // drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
+          drupal_goto(variable_get('strava_auth_login_redirect', 'user'));
           // drupal_goto('/node/add/story');
-          drupal_goto($path);
+          // drupal_goto($path);
         }
       }
       else {
