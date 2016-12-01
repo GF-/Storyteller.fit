@@ -251,6 +251,26 @@ em {
 }
 
 
+/* Ordered list on sidebar */
+
+.sidebar-item ol {
+  padding-left: 1.75rem;
+  font-size: 1.25rem;
+  line-height: 1.125rem;
+}
+  .sidebar-item ol li {
+    color: orangered;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+    .sidebar-item ol li span {
+      color: #222;
+      font-size: .875rem;
+    }
+    .sidebar-item ol li img {
+      margin-top: 1.25rem;
+    }
+
 
 /**
  * 2.LAYOUT
@@ -1962,11 +1982,17 @@ div.status.messages {
    }
 
     #container h2#site-slogan p {
-      font-size: 20px;
+      font-size: 1.25rem;
     }
     #container h2#site-slogan a span.call-action {
       color: #222;
     }
+      #container h2#site-slogan a span.call-action.small {
+        font-size: 1rem;
+        font-weight: normal;
+        color: #777;
+        white-space: nowrap;
+      }
     
     #site-slogan .login-strava { /* the Strava login button */
       width: 14rem;
@@ -2097,9 +2123,75 @@ div.status.messages {
         display: none;
       }
 
+
       /* Front page: Sidebar right hidden on mobile and portrait tablet */
       body.front .story-columns .node-column-sidebar-right {
-        display: none;
+        display: block;
+        overflow-x: hidden;
+      }
+      body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
+        margin: 3rem auto 0 auto;
+        width: 20rem;
+        padding: 1rem 0;
+        max-height: none;
+        overflow: auto;
+        overflow-x: hidden;
+        background-color: transparent;
+      }
+        body.front .story-columns .node-column-sidebar-right .sidebar-item {
+          margin-bottom: 3rem;
+        }
+
+      body.front .story-columns .node-column-sidebar-right .sidebar-inner-right .views-row {
+        margin-bottom: 1rem;
+      }
+
+      body.front .node-view-wrapper.story-columns .node-column-sidebar-right img.round {
+        width: 2rem;
+        height: 2rem;
+        padding-top: .125rem;
+      }
+      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2,
+      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 {
+        margin-top: 0;
+        font-family: Georgia, Times, "Times New Roman", serif;
+        font-weight: normal;
+        font-size: 1.75rem;
+        text-align: center;
+        padding-bottom: .5rem;
+      }
+        body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2 {
+          color: #777;
+          border-bottom: 1px solid #dcdcdc;
+          margin-bottom: 1.5rem;
+        }
+          body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2 img {
+            width: 2rem;
+            margin-right: 1rem;
+            padding-bottom: .2rem;
+          }
+
+        body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 a {
+          color: #222;
+        }
+          body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 a:visited {
+            color: #551A8B;
+          }
+      body.front .story-columns .node-column-sidebar-right .grey a {
+        color: #777;
+        font-size: .8125rem;
+      }
+
+      body.front .story-columns .node-column-sidebar-right .sidebar-inner-right video {
+        position: absolute;
+        top: 82px;
+        left: 15px;
+        width: 229px;
+        height: 199px;
+      }
+
+      body.front .story-columns .node-column-sidebar-right .sticky-sidebar .sidebar-item {
+        text-align: center;
       }
 
       /* Story node form: Sidebar right */
@@ -2367,6 +2459,7 @@ div.status.messages {
         margin-top: -11%; /* This kinda centers the image */
       }
 
+
     /* On user page */
     body.page-user .stories-list-medium {
       margin-top: 2rem;
@@ -2626,6 +2719,7 @@ div.status.messages {
     #container h2#site-slogan p {
       font-size: 1.5625rem;
     }
+
     #site-slogan .login-strava { /* the Strava login button */
       width: 14rem;
       padding-top: 5px;
@@ -2647,6 +2741,19 @@ div.status.messages {
       body.front #container {
         padding-top: 3.75rem;
       }
+
+        /* Front page column */
+        body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
+          width: 23rem;
+        }
+
+        body.front .story-columns .node-column-sidebar-right .sidebar-inner-right video {
+          top: 91px;
+          left: 18px;
+          width: 262px;
+          height: 228px;
+        }
+
 
      /* Story node form: Sidebar right */
       .story-columns .node-column-sidebar-right .athlete-info{
@@ -2752,6 +2859,9 @@ div.status.messages {
       font-size: 1.625rem;
     }
 
+      #container h2#site-slogan a span.call-action.small {
+        font-size: 1.125rem;
+      }
 
   h1, .h1 {
       font-size: 1.75em;
@@ -3048,6 +3158,25 @@ div.status.messages {
     width: calc(1148px - 28rem);
   }
 
+    /* Front page column sidebar */
+    body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
+      margin: 0;
+    }
+
+      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2,
+      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 {
+        font-family: Arial,sans-serif;
+        font-size: .875rem;
+        text-align: left;
+        padding-bottom: 0;
+      }
+
+      body.front .story-columns .node-column-sidebar-right .sticky-sidebar .sidebar-item {
+        text-align: left;
+      }
+
+
+
   /* Sorting columns */
   .story-columns .node-column-sidebar-left {
     order: 1;
@@ -3107,59 +3236,6 @@ div.status.messages {
             width: 2rem;
           }
 
-
-      /* Front page: Sidebar right hidden on mobile and portrait tablet */
-      body.front .story-columns .node-column-sidebar-right {
-        display: block;
-      }
-      body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
-        width: 20rem;
-        padding: 1rem 0;
-        max-height: none;
-        overflow: auto;
-        background-color: transparent;
-      }
-        body.front .story-columns .node-column-sidebar-right .sidebar-item {
-          margin-bottom: 3rem;
-        }
-
-      body.front .story-columns .node-column-sidebar-right .sidebar-inner-right .views-row {
-        margin-bottom: 1rem;
-      }
-
-      body.front .node-view-wrapper.story-columns .node-column-sidebar-right img.round {
-        width: 2rem;
-        height: 2rem;
-        padding-top: .125rem;
-      }
-      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2,
-      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 {
-        margin-top: 0;
-        font-family: Arial,sans-serif;
-        font-weight: normal;
-        font-size: .8125rem;
-      }
-        body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2 {
-          color: #777;
-          border-bottom: 1px solid #dcdcdc;
-          margin-bottom: 1.5rem;
-        }
-          body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2 img {
-            width: 2rem;
-            margin-right: 1rem;
-            padding-bottom: .2rem;
-          }
-
-        body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 a {
-          color: #222;
-        }
-          body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 a:visited {
-            color: #551A8B;
-          }
-      body.front .story-columns .node-column-sidebar-right .grey a {
-        color: #777;
-        font-size: .8125rem;
-      }
 
 
     /* Story node form: Sidebar right */
