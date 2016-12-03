@@ -1487,7 +1487,7 @@ img {
         top: 44px;
         left: 0;
         z-index: 1;
-        box-shadow: 0px 2px 1px 1px #ddd;
+        box-shadow: 0px 3px 7px 1px #999; /*0px 2px 1px 1px #ddd;*/
       }
 
       .views-exposed-form .views-exposed-widget {
@@ -1592,22 +1592,50 @@ div.status.messages {
   /* Share buttons */
 
 
-  .share-buttons {
-    margin-top: 2rem;
-  }
+    /* On story */
+    .share-buttons {
+      margin-top: 2rem;
+    }
 
-  .fb-share-button,
-  .twitter-share-button {
-    opacity: .8;
-  }
+    .fb-share-button,
+    .twitter-share-button-wrapper {
+      /*opacity: .8;*/
+      display: inline-block;
+      vertical-align: bottom;
+    }
 
-  .fb-share-button {
-    margin-right: .5rem;
-    margin-bottom: .5rem
-  }
+    .fb-share-button {
+      margin-right: .5rem;
+      margin-bottom: .5rem
+    }
+    .twitter-share-button {
+      margin-bottom: 1px;
+    }
+
+    /* Site-wide */
+    header .fb-like {
+      display: none !important;
+    }
+
+    header .twitter-follow-button {
+      display: none !important;
+    }
+
+    /* Front page sidebar */
+    .node-column-sidebar-right .fb-like {
+      display: inline-block;
+    }
+
+    .node-column-sidebar-right .twitter-follow-button {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-left: .75rem;
+    }
 
 
-  /* User data info */
+
+/* User data info */
+
   #user-data {
     display: none;
   }
@@ -2841,7 +2869,7 @@ div.status.messages {
     position: absolute;
     right: 0;
   }
-  
+
 
 
 }
@@ -2904,7 +2932,7 @@ div.status.messages {
         display: inline-block;
        }
        #navigation ul#user-menu li a {
-        padding: 0 0 0 2rem;
+        padding: 0 0 0 .5rem;
         width: auto;
        }
        #navigation li span {
@@ -3073,6 +3101,23 @@ div.status.messages {
         margin-left: -5rem;
       }
 
+
+  /* Sharing options */
+
+    /* Site-wide */
+    header .fb-like {
+      display: inline-block !important;
+      float: left;
+      margin-top: 1rem;
+      margin-left: .5rem;
+    }
+
+    header .twitter-follow-button {
+      display: inline-block !important;
+      float: left;
+      margin-top: 1.22rem;
+      margin-left: .5rem;
+    }
 
 
   /**
@@ -3390,7 +3435,7 @@ div.status.messages {
    */
 
     body #header #logo img.logo-small {
-      width: 14.5rem;
+      width: 16rem;
       margin-left: 0;
       margin-top: .5rem;
     }
@@ -3411,6 +3456,12 @@ div.status.messages {
       right: auto;
       margin: 2rem 0 -2rem 11.5rem;
     }
+
+    #navigation ul#user-menu li a {
+      padding: 0 0 0 2rem;
+      width: auto;
+    }
+
 
   /**
    * 10.FOOTER
@@ -3542,31 +3593,19 @@ div.status.messages {
    * 16.Custom
    */
 
-  /* Video and Laptop */
-    .how-it-works {
-      width: 45rem;
-      max-width: 45rem;
+
+  /* Sharing options */
+
+    /* Site-wide */
+    header .fb-like {
+      margin-left: 2rem;
     }
 
-    .how-it-works:after {
-      content: '';
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 1.5rem;
-      bottom: -1.15rem;
-      background: #dfdfdf;
-      border-radius: 6px;
-      border: 1px solid #c0c0c0;
+    header .twitter-follow-button {
+      margin-left: 1rem;
     }
 
-    .how-it-works video {
-        width: calc(100% - 5rem);
-        padding: 1rem;
-        border-radius: 10px;
-        border: 1px solid #c0c0c0;
-        margin-left: auto;
-    }
+
 
     /**
      * 17.Comments
