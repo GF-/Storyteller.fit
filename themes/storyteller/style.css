@@ -483,6 +483,29 @@ body.sidebar-second #sidebar-second {
   }
 
 
+/* Story strapline */
+
+  /* No strapline needed for logged-in user */
+  body.logged-in .strapline {
+    display: none;
+  }
+
+  .strapline {
+    background: #d9d9d9;
+    padding: .5rem 1rem;
+    border-radius: 0 0 4px 4px
+  }
+    .strapline span {
+      font-size: .8125rem;
+      padding: .25rem;
+    }
+    .strapline a {
+      word-wrap: nowrap;
+    }
+    .strapline img {
+      height: 40px;
+    }
+
 
 /**
  * 6.NAVIGATION
@@ -2057,6 +2080,10 @@ div.status.messages {
       padding: .6rem 0rem;
       font-size: .875rem;
     }
+      body.not-logged-in header .button {
+        padding: .6rem .5rem;
+        font-size: .875rem;
+      }
 
 
   /**
@@ -2753,8 +2780,8 @@ div.status.messages {
       padding-top: 5px;
     }
 
-
-    header .button {
+    header .button,
+    body.not-logged-in header .button {
       padding: .4rem .6rem;
       font-size: 1.0625rem;
     }
@@ -2811,6 +2838,17 @@ div.status.messages {
    header .button {
       margin-right: .5rem;
   }
+
+
+/* Story strapline */
+
+  .strapline {
+    background: #e7e7e7;
+    padding: .5rem 2rem;
+  }
+    .strapline span {
+      font-size: .8125rem;
+    }
 
 
   /**
