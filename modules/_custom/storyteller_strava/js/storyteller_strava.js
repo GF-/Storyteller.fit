@@ -181,13 +181,28 @@
               return false;
           }
 
-        // If IE, empty the right sidebar
+          // Detect Safari. Safari does not support CKEditor drag'n'drop
+          // http://stackoverflow.com/questions/39120772/how-to-detect-safari-10-browser-in-javascript
+
+          // (required) Opera 8.0+
+          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          // (required) Chrome 1+
+          var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+          // Safari
+          isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0 || !isChrome && !isOpera && window.webkitAudioContext !== undefined;
+
+        // If IE, add Class
           if(detectIE()) {
-            $('.node-column-sidebar-right').addClass('IE');
+              $('.node-column-sidebar-right').addClass('IE');
+          };
+
+          // If IE or safari, enable click n drop
+          if(detectIE() || isSafari) {
             $('.node-column-sidebar-right p.mobile-hidden').html('<p><strong>Click to insert</strong> pictures and maps and videos into your story</p>');
 
             // Click n drop
-
             $('.photos, .map, .field-type-image, #video-embed').unbind().bind("DOMSubtreeModified", function(){
               
               $('.photos img, .map img, .field-type-image img, #video-embed').unbind().click(function() {
@@ -230,9 +245,83 @@
               }
             }
 
+
+        // Set text language and cover image
+
+            function setLang_Cover() {
+
+             // Getting value from CKEditor and stripping html
+             var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
+             var cke_text = $(cke_html).text();
+
+            // Setting the language
+
+               // Franc does its job
+               lang = franc(cke_text, {'minLength': 200});
+
+               // Set value on languages field select
+               $('#edit-field-language-und').val(lang);
+
+
+            // Set a cover image
+
+            // First we check for images
+            
+              // Look for the first img in the html, and find the url
+               var img_url = $(cke_html).find('img:first').attr('src');
+
+               if (img_url !== undefined) {
+
+                  // Remove paramaters from URL
+                  // var index = 0;
+                  // var img_url_clean = img_url;
+                  // index = img_url.indexOf('?');
+                  // if(index == -1){
+                  //     index = img_url.indexOf('#');
+                  // }
+                  // if(index != -1){
+                  //     img_url_clean = img_url.substring(0, index);
+                  // }
+                  
+                  // Setting value in the field
+                  $('#edit-field-cover-image-und-0-value').val(img_url);
+                } else {
+
+                 // If there are no images, we try with the poster from a youtube video - if any
+                 // THank you http://stackoverflow.com/questions/18681788/how-to-get-a-youtube-thumbnail-from-a-youtube-iframe
+
+                 // Look for the first iframe and find the source url
+                 var iframe_src = $(cke_html).find('iframe:first').attr('src');
+                 if (iframe_src) {
+
+                     // If any iframe, then find the youtube ID                  
+                     var youtube_id = iframe_src.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/).pop();
+
+                        youtube_id = youtube_id
+
+                       if (youtube_id.length == 11) {
+                        
+                        // Youtube thumb format 
+                        var youtube_thumb = 'https://img.youtube.com/vi/' + youtube_id + '/0.jpg';
+                        
+                        // Set URL on the cover image field
+                        $('#edit-field-cover-image-und-0-value').val(youtube_thumb);
+
+                     }
+                  } 
+
+               } // End cover image
+
+             }
+
+
+
         // On submit, check if Title-textarea is set: if so, copy value to #edit-title . If not, set default value
           $('#edit-submit').click(function(){
+            // Set title for the node
             setTitle();
+            // Set Language and cover image
+            setLang_Cover();
           });
 
 
@@ -259,44 +348,12 @@
             $('.draft-button').html('Publish');
             $('.draft-button').click(function() {
 
-            // First, set Cover image + set Language
-            
-               // Getting value from CKEditor and stripping html
-               var cke_html = $(CKEDITOR.instances['edit-body-und-0-value'].getData());
-               var cke_text = $(cke_html).text();
-
-            // Setting the language
-
-               // Franc does its job
-               lang = franc(cke_text, {'minLength': 200});
-
-               // Set value on languages field select
-               $('#edit-field-language-und').val(lang);
-
-
-            // Fetching the first img in the html
-
-               var img_url = $(cke_html).find('img:first').attr('src');
-               if (img_url !== undefined) {
-                  
-                  // Remove paramaters from URL
-                  // var index = 0;
-                  // var img_url_clean = img_url;
-                  // index = img_url.indexOf('?');
-                  // if(index == -1){
-                  //     index = img_url.indexOf('#');
-                  // }
-                  // if(index != -1){
-                  //     img_url_clean = img_url.substring(0, index);
-                  // }
-                  
-                  // Setting value in the field
-                  $('#edit-field-cover-image-und-0-value').val(img_url);
-                }
-
                // On submit, check if Title-textarea is set: if so, copy value to #edit-title . If not, set default value
                  setTitle();
                  
+              // Set Language and cover image
+                 setLang_Cover();
+
                // Set Published
                  $('#edit-status').attr('checked', true); 
                

@@ -886,6 +886,61 @@ img {
  *
  */
 
+
+
+/* Forum like list */
+
+.stories-list-forum {
+  width: 100%;
+}
+
+.stories-list-forum .views-row {
+  margin: 1px auto 0;
+  box-shadow: 0px 0px 0px 1px #ccc; /* #eee for Desktop */
+ }
+
+ .stories-list-forum .avatar img {
+  border-radius: 50%;
+ }
+
+ .stories-list-forum h3 {
+  margin-top: 0;
+  font-size: 1.125rem;
+  padding: .5rem 0 .125rem 0;
+ }
+  /* Language */
+  .stories-list-forum h3 .language {
+    margin-left: 1rem;
+    font-weight: normal;
+    font-family: Arial, sans-serif;
+   }
+
+ .stories-list-forum p {
+  margin-top: .3rem;
+  margin-bottom: 0;
+ }
+ .stories-list-forum a h3 {
+  color: #222;
+ }
+
+  .stories-list-forum a:visited h3 {
+    color: rebeccapurple !important;
+  }
+ .stories-list-forum .views-row .small a {
+    font-size: .9375rem;
+  }
+
+
+
+
+  /* Activity type */
+ .stories-list-forum img.icon {
+    position: absolute;
+  }
+
+  /*End forum*/
+
+
  .stories-list .inline-block {
   vertical-align: top;
  }
@@ -966,36 +1021,40 @@ img {
   
   .item-list ul.pager {
     margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding: .75rem;
-    border-radius: 4px;
-    background-color: #fafafa;
    }
 
   .item-list .pager li {
     background-color: transparent;
   }
     .item-list .pager li a {
-      color: #333;
+      padding: .5rem;
+      font-size: 1.25rem;
+      color: orangered;
     }
   
+    .item-list .pager li.pager-prev,
+    .item-list .pager li.pager-next {
+      padding: 1rem 1.25rem;
+    }
+
+    .item-list .pager li.pager-last,
+    .item-list .pager li.pager-first,
+    .item-list .pager li.pager-ellipsis {
+      display: none;
+    }
+
+    /* On full pager
     .item-list .pager li.pager-item,
     .item-list .pager li.pager-current {
       padding: 1rem 1.25rem;
-    }
+    }*/
       
-      /* active */
+      /* Active - on full pager
       .item-list .pager li.pager-current {
         padding: 1rem 1.25rem;
         background-color: #f2f2f2;
       }
-
-     .item-list .pager li.pager-prev,
-     .item-list .pager li.pager-next {
-      padding: 1rem 1.25rem;
-      
-    }
+      */
 
 /* More stories on Story-node page */
 
@@ -1491,12 +1550,14 @@ img {
   /* Views exposed filters */
 
   .view-filters {
-    height: 8rem; /*Or it collapses on Sticky anchor*/
+    height: 6rem; /*Or it collapses on Sticky anchor*/
   }
 
   .views-exposed-form {
+    position: relative;
+    height: 53px; /* preventing from collapse when things are dynamically hidden in js */
     margin: 1rem 0 2rem 0;
-    padding: .5rem 1.5rem .25rem 1.5rem;
+    padding: 0 .5rem .125rem .75rem;
     border-radius: 2px;
     background-color: #fafafa;
     box-shadow: 0px 0px 0px 1px #eee;
@@ -1504,51 +1565,85 @@ img {
     webkit-transition: box-shadow .3s ease-out;
   }
 
+      .views-exposed-form .views-exposed-widget {
+        display: inline-block;
+      }
+
+      .views-exposed-form .views-exposed-widget label {
+        display: none;
+        font-weight: normal;
+        font-size: .8125rem;
+      }
+
+      /* Radio filters: Activity type */
+      .views-exposed-form .views-exposed-widget .form-type-radio label {
+          display: inline-block !important;
+          margin-right: .25rem;
+          padding: .4rem .6rem;
+          cursor: pointer;
+          
+          /* Alternative style */
+          /*background-color: #eee;
+          color: #333;
+          border-radius: 4px;*/
+      }
+
+
+      /* Styling radio buttons as links */
+      .views-exposed-form .form-type-radio {
+        display: inline-block;
+      }
+
+      .views-exposed-form .form-type-radio input[type="radio"] {
+          display: none;
+      }
+        .views-exposed-form .form-type-radio input[type="radio"]:checked + label {
+           border-bottom: 3px solid orangered;
+
+           /* Alternative style */
+           /*background-color: orangered;
+           color: #fafafa;*/
+        }
+
+      /* Search for a story, athlete or location */
+      .views-exposed-form .views-exposed-widget input {
+        position: absolute;
+        right: .5rem;
+        width: calc(100% - 14rem);
+        padding: .3rem 0 .6rem 0;
+        font-size: 1rem;
+        background-color: #fafafa;
+        -webkit-transition: .2s all ease-out;
+        transition: .2s all ease-out;
+      }
+
+      .views-exposed-form .views-exposed-widget input:focus {
+        border-bottom: 2px solid #F26D3A;
+        width: 13rem;
+        right: 4rem;
+      }
+
+      /* Submit button hidden by default */
+      .views-exposed-form input#edit-submit-stories {
+        display: none;
+        margin: 0;
+        width: 3rem;
+        border: none;
+        color: orangered;
+        background-color: #f2f2f2;
+        font-size: .8375rem;
+      }
+
       /* Sticky*/
-      .views-exposed-form.sticky {
+      body.front.not-logged-in .views-exposed-form.sticky {
         position: fixed;
+        width: 100%;
         top: 44px;
         left: 0;
         z-index: 1;
         box-shadow: 0px 3px 7px 1px #999; /*0px 2px 1px 1px #ddd;*/
       }
 
-      .views-exposed-form .views-exposed-widget {
-        display: inline-block;
-      }
-        .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
-          /*margin-right: 4rem;*/
-        }
-        .views-exposed-form .views-exposed-widget.views-widget-filter-combine {
-          width: calc(100% - 8rem);
-          overflow: hidden;
-        }
-
-      .views-exposed-form .views-exposed-widget label {
-        display: none;
-        font-weight: normal;
-        font-size: .8125rem;
-        padding-left: 0;
-      }
-
-      .views-exposed-form .views-exposed-widget input {
-        font-size: 1rem;
-      }
-
-     .views-exposed-form .views-exposed-widget input:focus {
-        border-bottom: 2px solid #F26D3A;
-      }
-          
-
-        .views-exposed-form .views-exposed-widget input:focus ~ label {
-        
-        }
-
-      .views-exposed-form .views-exposed-widget select#edit-field-type-value {
-        width: 5rem;
-      }
-
-      
 
 /* Contact form*/
 
@@ -2034,6 +2129,7 @@ div.status.messages {
 
     #container h2#site-slogan p {
       font-size: 1.25rem;
+      margin-top: 0;
     }
     #container h2#site-slogan a span.call-action {
       color: #222;
@@ -2081,8 +2177,9 @@ div.status.messages {
       font-size: .875rem;
     }
       body.not-logged-in header .button {
+        margin-right: .5rem;
         padding: .6rem .5rem;
-        font-size: .875rem;
+        font-size: .9375rem;
       }
 
 
@@ -2094,7 +2191,7 @@ div.status.messages {
   
   #site-slogan {
    margin: 1rem auto;
-   padding: .5rem 2rem 2rem 2rem;
+   padding: .5rem 2rem .5rem 1.5rem;
   }
 
   body.front .intro-left {
@@ -2337,7 +2434,7 @@ div.status.messages {
       margin-left: .8rem;
     }
 
-      body.not-front header .button {
+      body.logged-in.not-front header .button {
           margin-right: 0;
       }
 
@@ -2455,6 +2552,75 @@ div.status.messages {
    *
    */
   
+
+/* Forum - style list */
+
+.stories-list-forum .white-bg {
+   padding: .75rem .5rem;
+}
+
+ .stories-list-forum .views-story-item {
+    max-width: calc(100% - 5rem);
+ }
+
+ /* Activity type */
+ .stories-list-forum img.icon {
+    width: 1.5rem;
+    margin-top: 4.25rem;
+    margin-left: 1rem;
+  }
+  /* User avatar */
+ .stories-list-forum .avatar {
+    margin-right: .5rem;
+  }
+   .stories-list-forum .avatar img {
+      width: 3.5rem;
+    }
+
+
+  /* Story title */
+  .stories-list-forum h3 {
+    margin-top: 0;
+  }
+
+  /* Cover image */
+  .stories-list-forum .thumb {
+    margin: .5rem 0 0 4rem;
+  }
+  .stories-list-forum .thumb img {
+    margin-right: 1rem;
+  }
+  
+  /* Wrapper for: cover image, vote and comments count. On mobile they are on dedicated a row*/
+  .stories-list-forum .item-footer {
+    display: flex;
+  }
+  .stories-list-forum .rate-widget,
+  .stories-list-forum .comment-count {
+    margin-top: 1rem;
+    width: 3.5rem;
+    line-height: 40px;
+    text-align: center;
+  }
+    .stories-list-forum .comment-count img {
+      padding: 0 .25rem;
+    }
+    .stories-list-forum .rate-widget {
+      margin-right: 0;
+      background-color: #f2f2f2;
+      border-radius: 4px;
+      box-shadow: 0px 0px 2px 1px #ccc; /*#eee*/
+    }
+      .stories-list-forum .rate-widget .rate-button {
+        font-size: 1.75rem;
+        margin: 0;
+        margin-left: .125rem;
+      }
+
+    /* End forum - style list */
+
+
+
   .stories-list .views-row {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -2767,8 +2933,7 @@ div.status.messages {
    */
 
    #site-slogan {
-    margin: 1rem auto;
-    max-width: 30rem;
+    margin: 1rem auto 1rem 1rem;
    }
 
     #container h2#site-slogan p {
@@ -2918,7 +3083,8 @@ div.status.messages {
    */
 
    #site-slogan {
-    max-width: 39rem;
+    max-width: 42rem;
+    margin-top: 2rem;
    }
 
     #container h2#site-slogan p {
@@ -2948,6 +3114,16 @@ div.status.messages {
     font-size: 1.25em;
     line-height: 1.4;
   }
+
+
+    /**
+     * 2.LAYOUT
+     */
+
+  body.front .story-columns {
+      margin-left: 1rem;
+      max-width: none;
+    }
 
 
 
@@ -3018,17 +3194,175 @@ div.status.messages {
    * 12.VIEWS
    *
    */
-  
-  /* Sticky exposed filters */
-  .views-exposed-form.sticky {
-    top: 28px;
-    left: calc((100% - 32rem)/2);
-    z-index: 1;
-  }
+
+
+  /* Views exposed filters */
 
   .view-filters {
-    height: 8rem; /*Or it collapses once Sticky anchor is triggered */
+    height: 7rem; /*Or it collapses on Sticky anchor*/
   }
+
+  .views-exposed-form {
+    height: 63px;
+    margin: 1.5rem 1.5rem 1rem 1rem;
+    padding: .5rem .5rem .25rem .75rem;
+    border-radius: 2px;
+    background-color: #fafafa;
+    box-shadow: 0px 0px 0px 1px #ddd;
+  }
+
+
+      .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
+        margin-right: 4rem;
+      }
+      .views-exposed-form .views-exposed-widget.views-widget-filter-combine {
+        width: auto;
+        overflow: visible;
+      }
+
+
+
+
+      .views-exposed-form .views-exposed-widget {
+        display: inline-block;
+      }
+
+      .views-exposed-form .views-exposed-widget label {
+        display: none;
+        font-weight: normal;
+        font-size: .9375rem;
+      }
+
+      /* Radio filters: Activity type */
+      .views-exposed-form .views-exposed-widget .form-type-radio label {
+          display: inline-block !important;
+          margin-right: .25rem;
+          padding: .4rem .6rem;
+
+      }
+
+      /* Search for a story, athlete or location */
+      .views-exposed-form .views-exposed-widget input {
+        right: 1.5rem;
+        width: 15rem;
+        padding: .3rem 0 .6rem 0;
+      }
+
+      .views-exposed-form .views-exposed-widget input:focus {
+        width: 20rem;
+        right: 5rem;
+      }
+
+      /* Sticky*/
+      body.front.not-logged-in .views-exposed-form.sticky {
+        margin: .5rem 0.5rem .25rem 2rem;
+        width: calc(100% - 3.5rem);
+        top: 44px;
+
+        z-index: 1;
+        box-shadow: 0px 3px 7px 1px #999; /*0px 2px 1px 1px #ddd;*/
+      }
+
+
+
+
+  /* Forum - style list */
+
+  .stories-list-forum .views-row {
+    box-shadow: 0px 0px 0px 1px #ddd;
+  }
+
+  .stories-list-forum .view-content {
+    padding: 0 1.5rem 0 5rem;
+  }
+
+  .stories-list-forum .white-bg {
+     padding: .75rem 1rem;
+  }
+
+   /* Activity type */
+   .stories-list-forum img.icon {
+      width: 2rem;
+      margin: 0;
+      left: -3.5rem;
+      top: 2rem;
+    }
+
+  /* Central part: title and author */
+  .stories-list-forum .views-story-item {
+    width: calc(100% - 19rem);
+  }
+    /* Title */
+    .stories-list-forum h3 {
+      font-size: 1.125rem;
+    }
+
+  /* Wrapper for: cover image, vote and comments count */
+  .stories-list-forum .item-footer {
+    display: inline-block;
+  }
+
+
+
+  /* User avatar */
+ .stories-list-forum .avatar {
+    margin-right: 1rem;
+    margin-top: .5rem;
+  }
+   .stories-list-forum .avatar img {
+      width: 3.5rem;
+    }
+
+
+  /* Story title */
+  .stories-list-forum h3 {
+    margin-top: 0;
+  }
+ 
+  /* Cover image */
+  .stories-list-forum .thumb {
+    margin: 0 0 0 .5rem;
+    width: 9.5rem;
+  }
+  .stories-list-forum .thumb img {
+    width: 9rem;
+    margin-right: 0;
+    display: block;
+  }
+  
+
+  .stories-list-forum .rate-widget,
+  .stories-list-forum .comment-count {
+    margin-top: .5rem;
+    width: 3.5rem;
+    line-height: 40px;
+    text-align: center;
+  }
+      .stories-list-forum .comment-count {
+        margin-top: 0;
+      }
+
+    .stories-list-forum .comment-count {
+      display: block;
+    }
+    
+    .stories-list-forum .rate-widget {
+      margin-right: 0;
+      background-color: transparent;
+      border-radius: 4px;
+      box-shadow: none; /*#eee*/
+    }
+
+      .stories-list-forum .rate-widget .rate-button {
+        font-size: 1.5rem;
+        margin: 0;
+        margin-left: .125rem;
+      }
+
+    /* End forum - style list */
+
+
+
 
   /* Stories views */
   .stories-list .views-row {
@@ -3099,28 +3433,11 @@ div.status.messages {
       }
 
 
-
-    /* Views exposed filters */
-
-    .views-exposed-form {
-      margin: 2rem auto 0 auto;
-      max-width: 32rem;
-    }
-
-          .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
-            margin-right: 4rem;
-          }
-          .views-exposed-form .views-exposed-widget.views-widget-filter-combine {
-            width: auto;
-            overflow: visible;
-          }
-
-
     /* Stories: paginator */
 
       .item-list ul.pager {
-        width: 32rem;
-       }
+        margin-top: 3rem;
+      }
 
 
   /**
@@ -3206,7 +3523,7 @@ div.status.messages {
 
 
   #site-slogan {
-    margin: 2rem auto 4rem 5.5rem;
+    margin: 0 auto 3rem 3.5rem;
     max-width: 46rem;
     padding-bottom: 0;
    }
@@ -3230,33 +3547,49 @@ div.status.messages {
     flex-direction: row;
     flex-wrap: nowrap;
     margin-top: 4rem;
-
     max-width: 100%;
   }
 
 
-  /* Front page: main column */
-  body.front .story-columns .node-column-main {
-    margin: 0 0 0 4rem;
-    width: calc(1148px - 28rem);
+  /* Front main column */
+
+  body.front .story-columns {
+     margin-top: 2rem;
   }
 
-    /* Front page column sidebar */
-    body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
-      margin: 0;
+  body.front .story-columns .node-column-main {
+    margin: 0; /*0 0 0 4rem*/
+    width: calc(1148px - 18rem);
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  /* Front page column sidebar */
+  body.front .story-columns .node-column-sidebar-right .sidebar-inner-right {
+    margin: 0;
+  }
+
+    body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2,
+    body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 {
+      font-family: Arial,sans-serif;
+      font-size: .875rem;
+      text-align: left;
+      padding-bottom: 0;
     }
 
-      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h2,
-      body.front .node-view-wrapper.story-columns .node-column-sidebar-right h3 {
-        font-family: Arial,sans-serif;
-        font-size: .875rem;
-        text-align: left;
-        padding-bottom: 0;
-      }
+    body.front .story-columns .node-column-sidebar-right .sticky-sidebar .sidebar-item {
+      text-align: left;
+    }
 
-      body.front .story-columns .node-column-sidebar-right .sticky-sidebar .sidebar-item {
-        text-align: left;
-      }
+    /* Margin for logged-out user */
+    body.front.not-logged-in .story-columns .node-column-sidebar-right {
+      margin-top: 15.125rem;
+    }
+
+    /* Margin for logged-in user */
+    body.front.logged-in .story-columns .node-column-sidebar-right {
+      margin-top: 1.5rem;
+    }
 
 
 
@@ -3554,24 +3887,24 @@ div.status.messages {
 
 
     /* Views exposed filters */
-    .views-exposed-form {
-      max-width: 40rem;
-    }
+    .views-exposed-form {}
 
         .views-exposed-form .views-exposed-widget.views-widget-filter-field_type_value {
           margin-right: 2rem;
         }
 
         /* Sticky */
-        .views-exposed-form.sticky {
-          left: calc((100% - 40rem)/2);
-          width: 40rem;
+        body.front.not-logged-in .views-exposed-form.sticky {
+          margin-left: 1rem;
+          left: auto;
+          width: 63.8%;
           z-index: 1;
         }
 
     /* Stories: paginator */
       .item-list ul.pager {
-        width: 40rem;
+        margin: 3rem 0 0 3rem;
+        text-align: left;
        }
 
 
@@ -3703,9 +4036,12 @@ div.status.messages {
       border: 10px solid #e5e5e5;
       overflow: hidden;
     }
-      #site-slogan {
-        margin: 1rem auto 4rem 5rem;
-       }
+
+    /* Front main column */
+    body.front .story-columns {
+       margin-left: 0; 
+    }
+
 
       /* Cropping video */
       body.front .intro-right video {
@@ -3741,6 +4077,24 @@ div.status.messages {
     padding-left: 0;
     padding-right: 0;
    }
+
+
+  /**
+   * 12.Views
+   *
+   */
+
+    /* Views exposed filters */
+    .views-exposed-form {
+      margin-left: 0;
+      padding-left: 1.25rem;
+    }
+
+    /* Sticky */
+    body.front.not-logged-in .views-exposed-form.sticky {
+      width: 47.75rem;
+      margin-left: 0;
+    }
 
   /**
    * 16.Custom
