@@ -2,11 +2,7 @@
   Drupal.behaviors.activities = {
     attach: function (context, settings) {
 
-      // Activities object from module
-      var activities = Drupal.settings.storyteller_strava.activities;
-
       var token = Drupal.settings.storyteller_strava.token;
-
       
       // Functions manipulating Strava data
       
@@ -80,13 +76,18 @@
           }
           function mtoMiles(meters) {
             var miles = meters * 0.000621371192;
-            miles = miles = miles.toFixed(1);
+            miles = miles.toFixed(1);
             return miles;
+          }
+          function mtoFeet(meters) {
+            var feet = meters * 3.28084;
+            feet = feet.toFixed(1);
+            return feet;
           }
 
         // Pace
         // Check insight here: https://groups.google.com/forum/#!searchin/strava-api/pace/strava-api/8IoTfCrPAQ4/CZPKll-7FQAJ
-          // Personal implementation. A btter way to calculate pace is welcome
+          // A better way to calculate pace?
           function pace(moving_time, distance) {
             var pace_decimal = (moving_time/60)/(distance/1000);
             var pace_minutes = (Math.floor(pace_decimal));
@@ -106,7 +107,152 @@
             return pace_minutes + ':' + pace_seconds;
           }
 
-          
+
+        // Activity data: get detailed Activity from Strava, and store the values on the form fields
+          function getActivity(activity_id) {
+            // Calling photos json: providing token and size
+              $.getJSON( "https://www.strava.com/api/v3/activities/" + activity_id +"?access_token=" + token + "&callback=?", function (activity) {
+      
+              // Set values on form fields: Activity name
+
+              // Id
+                // Value in form field
+                $('#edit-field-activity-id-und-0-value').val(activity_id);
+
+              // Title
+                // If Title is present
+
+                // then don't override it?
+                // if ($('#edit-field-title-textarea-und-0-value').val() == '')
+
+                // .expended class is added to work around this 'bug': when value is added via jquery, the textarea does not expand (it requires the user to focus on it and press a key)
+                $('#edit-field-title-textarea-und-0-value').addClass('expanded').val('Story for ' + activity['name']);
+                $('#edit-title').val('Story for ' + activity['name']);
+
+              // Title of the activity on Strava
+                // Value in form field
+                $('#edit-field-strava-title-und-0-value').val(activity['name']);
+
+              // Type
+                // Value in form field
+                $('#edit-field-type-und-0-value').val(activity['type']);
+
+              // Description
+                $('#edit-field-description-und-0-value').val(activity['description']);
+
+
+              // Printing readable value on sidebar
+
+                // Link to the activity on Strava
+                $('.activity_data .strava-activity').html('<span class="small light-grey">Activity on Strava</span><br /><a href="https://www.strava.com/activities/' + activity_id + '" target="_blank" >' + activity['name'] + '</a></p>');
+
+                // if 'Run'
+                if (activity['type'] == 'Run') {
+                  $('.activity_data .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Run.png" />');
+                  // Show pace
+                  $('.activity_data .pace').show();
+                }
+
+                // if 'Ride'
+                if (activity['type'] == 'Ride') {
+                  $('.activity_data .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Ride.png" />');
+                  // Hide pace
+                  $('.activity_data .pace').hide();
+                }
+
+
+              // Workout type
+                $('#edit-field-workout-type-und').val(activity['workout_type']);
+
+              // Date
+                // Value in form field
+                $('#edit-field-date-und-0-value').val(activity['start_date']);
+                // Printing readable value on sidebar
+                $('.activity_data .date').html('<span class="small light-grey">Date</span><br />' + readable_date(activity['start_date']) + '<br />at ' + readable_time(activity['start_date']));
+
+
+              // Moving time
+                // Value in form field
+                $('#edit-field-moving-time-und-0-value').val(activity['moving_time']);
+                // Printing readable value on sidebar
+                $('.activity_data .moving-time').html('<span>' + secondsToHms(activity['moving_time']) + '</span><span class="small light-grey"> <br />Moving time</span>');
+
+              // Distance
+                // Value in form field
+                $('#edit-field-distance-und-0-value').val(activity['distance']);
+                
+                // Printing readable value on sidebar
+                if ( $('#user-data .measurement').text() == 'meters' ) {
+                  $('.activity_data .distance').html('<span>' + mtoKm(activity['distance']) + ' </span><span class="small light-grey">km<br />' + activity['type'] + '</span>');
+                } else {
+                  $('.activity_data .distance').html('<span>' + mtoMiles(activity['distance']) + ' </span><span class="small light-grey">mi<br />' + activity['type'] + '</span>');
+                }
+
+              // Pace
+                // Same value on sidebar and form field
+                $('#edit-field-pace-und-0-value').val(pace(activity['moving_time'], activity['distance']) + '/km');
+
+                // Printing readable value on sidebar
+                if ( $('#user-data .measurement').text() == 'meters' ) {
+                  $('.activity_data .pace').html('<span class="small light-grey">Pace</span><br />' + pace(activity['moving_time'], activity['distance']) + '/km');
+                } else {
+                  $('.activity_data .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi(activity['moving_time'], activity['distance']) + '/mi');
+                }
+
+              // Average speed
+                // Value in form field
+                $('#edit-field-average-speed-und-0-value').val(activity['average_speed']);
+                
+                if ( $('#user-data .measurement').text() == 'meters' ) {
+                  // Printing readable value on sidebar
+                  $('.activity_data .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh(activity['average_speed']) + ' km/h');
+                } else {
+                  $('.activity_data .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph(activity['average_speed']) + ' mi/h');
+                }
+
+
+              // Elevation
+                // Value in form field
+                $('#edit-field-elevation-und-0-value').val(activity['total_elevation_gain']);
+
+                if ( $('#user-data .measurement').text() == 'meters' ) {
+                  // Printing readable value on sidebar
+                  $('.activity_data .elevation').html('<span>' + Math.round(activity['total_elevation_gain']) + ' </span><span class="small light-grey">m<br />Elevation</span>');
+                } else {
+                  var elevation_ft = activity['total_elevation_gain'] * 3.2808399;
+                  elevation_ft = Math.round( elevation_ft * 1 ) / 1;
+                  $('.activity_data .elevation').html('<span>' + elevation_ft + ' </span><span class="small light-grey">ft<br />Elevation</span>');
+
+                }
+
+              // Photos
+
+                // Value in form field -> Total-Photo-Count
+                $('#edit-field-total-photo-count-und-0-value').val(activity['photos']['count']);
+
+                // Print pics on the right sidebar
+                if (activity['photos']['count'] != 0) {
+                        getPhotos(activity_id);
+                } // End if Photos
+                else {
+                  // Empty Photos box on the right sidebar
+                  $('.node-column-sidebar-right .photos').html('');
+                }
+
+              // Maps
+
+                // *Summary* value in form field
+                $('#edit-field-summary-polyline-und-0-value').val(activity['map']['summary_polyline']);
+
+                // Render image on sidebar
+                // We use Google Maps Static , with summary polyline
+                // Map options: https://developers.google.com/maps/documentation/static-maps/intro#Markers
+                $('.node-column-sidebar-right .map').html('<img src="http://maps.googleapis.com/maps/api/staticmap?sensor=false&key=AIzaSyDJqrL0OPi8BKF6yg8FNl8wROQ6aWiZiL0&maptype=terrain&size=512x320&scale=2&path=weight:2%7Ccolor:0xff0000ff%7Cenc:' + activity['map']['summary_polyline'] + '" />');
+
+
+              });
+          }
+
 
         // Photos
           function getPhotos(activity_id) {
@@ -122,30 +268,28 @@
                         $('.node-column-sidebar-right .photos').append('<img src="' + photos[key].urls[800] + '" />');
                     }
                 }
-
-               // $("#footer").html();
               });
           }
 
-        // Activity detail: Description - need to call Detailed Activity to get this value
-          function getDescription(activity_id) {
-              // Calling photos json: providing token and size
-              $.getJSON( "https://www.strava.com/api/v3/activities/" + activity_id +"?access_token=" + token + "&callback=?", function (detailedActivity) {
-                    if (detailedActivity.hasOwnProperty('description')) {
-                        var activityDescription = detailedActivity['description'];
-                        $('#edit-field-description-und-0-value').val(activityDescription);
-                    }
-              });
-          }
 
-        // Adding 'date' and 'type' to the title on Activities list
-          $("#edit-field-activities > option").each(function() {
-              // conditions:
-              // 1. skip option #0 (it's not an activity)
-              // 2. only if options aren't already there
-              if (this.value > 0 && (this.text.indexOf(' - ')) != 10 )
-              this.text = activities_select_date(activities[$(this).val()]['start_date']) + ' - ' + activities[$(this).val()]['type'] + ' - ' + this.text;
-          });
+        // Activity streams
+          function getStreamActivity(activity_id) {
+
+            // Calling stream json
+            $.getJSON( "https://www.strava.com/api/v3/activities/" + activity_id +"/streams/latlng,altitude,velocity_smooth?resolution=medium&original_size=512&access_token=" + token + "&callback=?", function (streamActivity) {
+
+              // Values in form fields
+                // LatLng
+                $('#edit-field-streamlatlng-und-0-value').val(JSON.stringify(streamActivity[0].data));
+                // Distances
+                $('#edit-field-streamdistances-und-0-value').val(JSON.stringify(streamActivity[1].data));
+                // Altitudes
+                $('#edit-field-streamaltitudes-und-0-value').val(JSON.stringify(streamActivity[2].data));
+                // Speed
+                $('#edit-field-streamvelocity-und-0-value').val(JSON.stringify(streamActivity[3].data));
+
+            });
+          }
 
 
         // Detect Internet Explorer - MSIE
@@ -234,7 +378,6 @@
 
             });
         }
-
 
         // Set Title, if empty assign default
             function setTitle() {
@@ -365,72 +508,68 @@
 
 
 
-      // If Activity ID is already set, hide the <select>
+      // If Activity ID is already set
 
       if ($('#edit-field-activity-id-und-0-value').val()) {
-        // Hide Activities select
-          $('.form-item-field-activities').hide();
 
+        // Set current activity on the activities Select
+        var activity_id = $('#edit-field-activity-id-und-0-value').val();
+        $('#edit-field-activities').val(activity_id);
 
       // Sidebar information from data stored on node
 
           // Link to the activity on Strava
-          $('.node-column-sidebar-left .strava-activity').html('<span class="small light-grey">Activity on Strava</span><br /><a href="https://www.strava.com/activities/' + $('#edit-field-activity-id-und-0-value').val() + '" target="_blank" >' + $('#edit-field-strava-title-und-0-value').val() + '</a><br />[<a href="#" class="change-activity-link">Edit</a>]</p>');
-
-          $('.change-activity-link').click(function(){
-              $('.form-item-field-activities').show();
-              $('.change-activity').hide();
-          });
+          $('.activity_data .strava-activity').html('<span class="small light-grey">Activity on Strava</span><br /><a href="https://www.strava.com/activities/' + $('#edit-field-activity-id-und-0-value').val() + '" target="_blank" >' + $('#edit-field-strava-title-und-0-value').val() + '</a></p>');
 
           // Set the date
-          $('.node-column-sidebar-left .date').html('<span class="small light-grey">Date</span><br />' + readable_date($('#edit-field-date-und-0-value').val()) + '<br />at '+ readable_time($('#edit-field-date-und-0-value').val()));
+          $('.activity_data .date').html('<span class="small light-grey">Date</span><br />' + readable_date($('#edit-field-date-und-0-value').val()) + '<br />at '+ readable_time($('#edit-field-date-und-0-value').val()));
 
           // Activity Type: if 'Run'
           if ($('#edit-field-type-und-0-value').val() == 'Run') {
-            $('.node-column-sidebar-left .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Run.png" />');
+            $('.activity_data .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Run.png" />');
             // Show pace
-            $('.node-column-sidebar-left .pace').show();
+            $('.activity_data .pace').show();
           }
       
           // Activity Type: if 'Ride'
           if ($('#edit-field-type-und-0-value').val() == 'Ride') {
-            $('.node-column-sidebar-left .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Ride.png" />');
+            $('.activity_data .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Ride.png" />');
             // Hide pace
-            $('.node-column-sidebar-left .pace').hide();
+            $('.activity_data .pace').hide();
           }
 
           // Moving time
-          $('.node-column-sidebar-left .moving-time').html('<span class="small light-grey">Moving time</span><br />' + secondsToHms($('#edit-field-moving-time-und-0-value').val()));
+          $('.activity_data .moving-time').html('<span>' + secondsToHms($('#edit-field-moving-time-und-0-value').val()) + '</span><span class="small light-grey"> <br />Moving time</span>');
 
           // Distance
-          // $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
+          // $('.activity_data .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
           if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' km');
+            $('.activity_data .distance').html('<span>' + mtoKm($('#edit-field-distance-und-0-value').val()) + ' </span><span class="small light-grey">km<br />' + $('#edit-field-type-und-0-value').val() + '</span>');
           } else {
-            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoMiles($('#edit-field-distance-und-0-value').val()) + ' mi');
+            $('.activity_data .distance').html('<span>' + mtoMiles($('#edit-field-distance-und-0-value').val()) + ' </span><span class="small light-grey">mi<br />' + $('#edit-field-type-und-0-value').val() + '</span>');
           }
 
           // Pace
           if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/km');
+            $('.activity_data .pace').html('<span class="small light-grey">Pace</span><br />' + pace($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/km');
           } else {
-            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/mi');
+            $('.activity_data .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi($('#edit-field-moving-time-und-0-value').val(), $('#edit-field-distance-und-0-value').val()) + '/mi');
           }
 
           // Avg Speed
           if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh($('#edit-field-average-speed-und-0-value').val()) + ' km/h');
+            $('.activity_data .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh($('#edit-field-average-speed-und-0-value').val()) + ' km/h');
           } else {
-            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph($('#edit-field-average-speed-und-0-value').val()) + ' mi/h');
+            $('.activity_data .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph($('#edit-field-average-speed-und-0-value').val()) + ' mi/h');
           }
 
           // Elevation
           if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + $('#edit-field-elevation-und-0-value').val() + ' m');
+            $('.activity_data .elevation').html('<span>' + Math.round($('#edit-field-elevation-und-0-value').val()) + ' </span><span class="small light-grey">m<br />Elevation</span>');
           } else {
             var elevation_ft = $('#edit-field-elevation-und-0-value').val() * 3.2808399;
             elevation_ft = Math.round( elevation_ft * 1 ) / 1;
-            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + elevation_ft + ' ft');
+            $('.activity_data .elevation').html('<span>' + elevation_ft + ' </span><span class="small light-grey">ft<br />Elevation</span>');
           }
 
           // Photos
@@ -442,228 +581,101 @@
 
           // Maps
           // Map options: https://developers.google.com/maps/documentation/static-maps/intro#Markers
-          $('.node-column-sidebar-right .map').html('<img src="http://maps.googleapis.com/maps/api/staticmap?sensor=false&key=AIzaSyDJqrL0OPi8BKF6yg8FNl8wROQ6aWiZiL0&maptype=terrain&size=800x600&path=weight:4%7Ccolor:0xff0000ff%7Cenc:' + $('#edit-field-summary-polyline-und-0-value').val() + '" />');
+          $('.node-column-sidebar-right .map').html('<img src="http://maps.googleapis.com/maps/api/staticmap?sensor=false&key=AIzaSyDJqrL0OPi8BKF6yg8FNl8wROQ6aWiZiL0&maptype=terrain&size=640x400&scale=2&path=weight:4%7Ccolor:0xff0000ff%7Cenc:' + $('#edit-field-summary-polyline-und-0-value').val() + '" />');
+
+      } else {
+
+        // If there's no activity already selected, on page load
+
+          // Focus on Select activities on document ready
+          $('#edit-field-activities').focus();
 
       }
 
-      // Upload photos input html wrapper
-      if (! $('.form-file').parents('.form-file-wrapper').length) {
-        $('.form-file').wrap('<div class="form-file-wrapper"></div>');
-      }
+    
+      // On document ready
 
-      // Title-textarea placeholder
-      $('#edit-field-title-textarea-und-0-value').attr('placeholder', 'A title for your story');
+        // Upload photos input html wrapper
+        if (! $('.form-file').parents('.form-file-wrapper').length) {
+          $('.form-file').wrap('<div class="form-file-wrapper"></div>');
+        }
 
-      // Focus on Select activities on page load
-      $('#edit-field-activities').focus();
+        // Title-textarea placeholder
+        $('#edit-field-title-textarea-und-0-value').attr('placeholder', 'A title for the story');
 
 
-      // When an Activity is selected
+      // When a new value is selected on the the Activities select
       $('#edit-field-activities', context).change(function () { 
 
-        // Check that an activity is selected
-        if (activities[$(this).val()]['type']) {
+        // Get the activity ID from the list of options (key)
+        var activity_id = $(this).val();
+        
+        // If an activity is selected
+        if (activity_id != 0) {
+
+          // Get the array from Strava with the basic activity data
+          getActivity(activity_id);
+
+          // Get the stream data based on activity ID and save values on form fields
+          getStreamActivity(activity_id);
 
           // :focus goes on Title-textarea field
           $('#edit-field-title-textarea-und-0-value').focus();
+          $('.form-item-field-title-textarea-und-0-value').addClass('expanded');
 
-        // Set values on form fields: Activity name
-
-        // Id
-          // Value in form field
-          $('#edit-field-activity-id-und-0-value').val(activities[$(this).val()]['id']);
-
-        // Title
-          // If Title is present, then don't override it?
-          // if ($('#edit-field-title-textarea-und-0-value').val() == '')
-          
-          // .expended class is added to work around this 'bug': when value is added via jquery, the textarea does not expand (it requires the user to focus on it and press a key)
-          $('#edit-field-title-textarea-und-0-value').addClass('expanded').val('Story for ' + activities[$(this).val()]['name']);
-          $('#edit-title').val('Story for ' + activities[$(this).val()]['name']);
-
-        // Strava title
-          // Value in form field
-          $('#edit-field-strava-title-und-0-value').val(activities[$(this).val()]['name']);
-
-        // Type
-          // Value in form field
-          $('#edit-field-type-und-0-value').val(activities[$(this).val()]['type']);
-
-        // Description
-          // Value in form field
-          $('#edit-field-description-und-0-value').val(getDescription( activities[$(this).val()]['id'] ));
-
-
-        // Printing readable value on sidebar
-
-          // Link to the activity  on Strava
-          $('.node-column-sidebar-left .strava-activity').html('<span class="small light-grey">Activity on Strava</span><br /><a href="https://www.strava.com/activities/' + activities[$(this).val()]['id'] + '" target="_blank" >' + activities[$(this).val()]['name'] + '</a><br />[<a href="#" class="change-activity-link">Edit</a>]</p>');
-
-          // if 'Run'
-          if (activities[$(this).val()]['type'] == 'Run') {
-            $('.node-column-sidebar-left .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Run.png" />');
-            // Show pace
-            $('.node-column-sidebar-left .pace').show();
+          // If Title-textarea is not visible, then show it
+          if(!$('.field-name-field-title-textarea label').hasClass('visible')){
+            $('.field-name-field-title-textarea label').addClass('visible');
           }
-
-          // if 'Ride'
-          if (activities[$(this).val()]['type'] == 'Ride') {
-            $('.node-column-sidebar-left .type').html('<img class="icon" src="/sites/default/themes/storyteller/img/icon-Ride.png" />');
-            // Hide pace
-            $('.node-column-sidebar-left .pace').hide();
-          }
-
-
-        // Workout type
-          $('#edit-field-workout-type-und').val(activities[$(this).val()]['workout_type']);
-
-        // Date
-          // Value in form field
-          $('#edit-field-date-und-0-value').val(activities[$(this).val()]['start_date']);
-          // Printing readable value on sidebar
-          $('.node-column-sidebar-left .date').html('<span class="small light-grey">Date</span><br />' + readable_date(activities[$(this).val()]['start_date']) + '<br />at ' + readable_time(activities[$(this).val()]['start_date']));
-
-
-        // Moving time
-          // Value in form field
-          $('#edit-field-moving-time-und-0-value').val(activities[$(this).val()]['moving_time']);
-          // Printing readable value on sidebar
-          $('.node-column-sidebar-left .moving-time').html('<span class="small light-grey">Moving time</span><br />' + secondsToHms(activities[$(this).val()]['moving_time']));
-
-        // Distance
-          // Value in form field
-          $('#edit-field-distance-und-0-value').val(activities[$(this).val()]['distance']);
-          
-          // Printing readable value on sidebar
-          if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoKm(activities[$(this).val()]['distance']) + ' km');
-          } else {
-            $('.node-column-sidebar-left .distance').html('<span class="small light-grey">Distance</span><br />' + mtoMiles(activities[$(this).val()]['distance']) + ' mi');
-          }
-
-        // Pace
-          // Same value on sidebar and form field
-          $('#edit-field-pace-und-0-value').val(pace(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/km');
-
-          // Printing readable value on sidebar
-          if ( $('#user-data .measurement').text() == 'meters' ) {
-            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/km');
-          } else {
-            $('.node-column-sidebar-left .pace').html('<span class="small light-grey">Pace</span><br />' + pace_mi(activities[$(this).val()]['moving_time'], activities[$(this).val()]['distance']) + '/mi');
-          }
-
-        // Average speed
-          // Value in form field
-          $('#edit-field-average-speed-und-0-value').val(activities[$(this).val()]['average_speed']);
-          
-          if ( $('#user-data .measurement').text() == 'meters' ) {
-            // Printing readable value on sidebar
-            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2kmh(activities[$(this).val()]['average_speed']) + ' km/h');
-          } else {
-            $('.node-column-sidebar-left .avg-speed').html('<span class="small light-grey">Average speed</span><br />' + ms2mph(activities[$(this).val()]['average_speed']) + ' mi/h');
-          }
-
-
-        // Elevation
-          // Value in form field
-          $('#edit-field-elevation-und-0-value').val(activities[$(this).val()]['total_elevation_gain']);
-
-          if ( $('#user-data .measurement').text() == 'meters' ) {
-            // Printing readable value on sidebar
-            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + activities[$(this).val()]['total_elevation_gain'] + ' m');
-          } else {
-            var elevation_ft = activities[$(this).val()]['total_elevation_gain'] * 3.2808399;
-            elevation_ft = Math.round( elevation_ft * 1 ) / 1;
-            $('.node-column-sidebar-left .elevation').html('<span class="small light-grey">Elevation gain</span><br />' + elevation_ft + ' ft');
-
-          }
-
-
-        // Photos
-
-          // Value in form field -> Total-Photo-Count
-          $('#edit-field-total-photo-count-und-0-value').val(activities[$(this).val()]['total_photo_count']);
-
-          // Printing pics on the right sidebar
-          if (activities[$(this).val()]['total_photo_count'] != 0) {
-
-                  getPhotos(activities[$(this).val()]['id']);
-
-          } // End if Photos
-          else {
-            
-            // Empty Photos
-            $('.node-column-sidebar-right .photos').html('');
-          }
-
-        // Maps
-
-          // Value in form field
-          $('#edit-field-summary-polyline-und-0-value').val(activities[$(this).val()]['map']['summary_polyline']);
-
-          // Render image on sidebar
-          // Need Google API
-          // Map options: https://developers.google.com/maps/documentation/static-maps/intro#Markers
-          $('.node-column-sidebar-right .map').html('<img src="http://maps.googleapis.com/maps/api/staticmap?sensor=false&key=AIzaSyDJqrL0OPi8BKF6yg8FNl8wROQ6aWiZiL0&maptype=terrain&size=800x600&path=weight:4%7Ccolor:0xff0000ff%7Cenc:' + activities[$(this).val()]['map']['summary_polyline'] + '" />');
 
 
         } else { // Else If 'Story not linked to an activity'
-          
-          
+
+          // Clear all fields
+
           // Empty Title
             $('#edit-field-title-textarea-und-0-value').val('');
-
           // Empty Activity ID
             $('#edit-field-activity-id-und-0-value').val('');
-          
           // Empty link to Strava activity
-            $('.node-column-sidebar-left .strava-activity').html('');
-
+            $('.activity_data .strava-activity').html('');
           // Empty Type
-            $('.node-column-sidebar-left .type').html('');
+            $('.activity_data .type').html('');
             $('#edit-field-type-und-0-value').val('');
-
           // Empty Description
             $('#edit-field-description-und-0-value').val('');
-
           // Empty Workout type
             $('#edit-field-workout-type-und').val('');
-          
           // Empty Date
-            $('.node-column-sidebar-left .date').html('');
+            $('.activity_data .date').html('');
             $('#edit-field-date-und-0-value').val('');
-          
           // Empty Moving Time
-            $('.node-column-sidebar-left .moving-time').html('');
+            $('.activity_data .moving-time').html('');
             $('#edit-field-moving-time-und-0-value').val('');
-          
           // Empty Distance
-            $('.node-column-sidebar-left .distance').html('');
+            $('.activity_data .distance').html('');
             $('#edit-field-distance-und-0-value').val('');
-          
           // Empty Pace
-            $('.node-column-sidebar-left .pace').html('');
+            $('.activity_data .pace').html('');
             $('#edit-field-pace-und-0-value').val('');
-
             // Empty Average Speed
-            $('.node-column-sidebar-left .avg-speed').html('');
+            $('.activity_data .avg-speed').html('');
             $('#edit-field-average-speed-und-0-value').val('');
-
           // Empty Elevation
-            $('.node-column-sidebar-left .elevation').html('');
+            $('.activity_data .elevation').html('');
             $('#edit-field-elevation-und-0-value').val('');
-
           // Empty Photos
             $('.node-column-sidebar-right .photos').html('');
-
           // Empty Map
             $('.node-column-sidebar-right .map').html('');
-
-               
+          // Empty streams
+            $('#edit-field-streamlatlng-und-0-value').val('');
+            $('#edit-field-streamdistances-und-0-value').val('');
+            $('#edit-field-streamaltitudes-und-0-value').val('');
+            $('#edit-field-streamvelocity-und-0-value').val('');
         }
 
       });
-
 
 
      // CKEditor toolbar: sticky on scroll
@@ -671,9 +683,8 @@
 
       // Toolbar class is: .cke-top
       
-      // First, prepending .cke-top-anchor to the textarea field
-      $('<div class="cke_top_anchor"></div>').insertBefore('.form-type-textarea');
-
+      // On document ready:: .cke-top-anchor to the textarea field
+      $('<div class="cke_top_anchor"></div>').insertAfter('.form-type-textarea');
 
       function sticky_relocate() {
 
@@ -681,15 +692,16 @@
 
           // CKE bar
           var cke_bar_top = $('.cke_top_anchor').offset();
-          cke_bar_top = cke_bar_top['top'];
+          cke_bar_top = cke_bar_top['top'] + 35; // Calibration
 
           // Node Column Left
           var node_column_left_top = $('.sticky-anchor').offset();
           node_column_left_top = node_column_left_top['top'];
 
           // Node Column Right
-          var node_column_right_top = $('.sticky-anchor').offset();
-          node_column_right_top = node_column_right_top['top'];
+            // The following is commented, as non needed in the layout latest version
+          // var node_column_right_top = $('.sticky-anchor').offset();
+          // node_column_right_top = node_column_right_top['top'] + 0; // Calibration
 
 
           // CKE bar
@@ -704,22 +716,23 @@
           // Node Column Left
           // We use .sticky-anchor as an anchor
           // if (window_top > node_column_left_top) {
-          //     $('.node-column-sidebar-left').addClass('sticky');
-          //     $('.sticky-anchor').height($('.node-column-sidebar-left').outerHeight());
+          //     $('.activity_data').addClass('sticky');
+          //     $('.sticky-anchor').height($('.activity_data').outerHeight());
           // } else {
-          //     $('.node-column-sidebar-left').removeClass('sticky');
+          //     $('.activity_data').removeClass('sticky');
           //     $('.sticky-anchor').height(0);
           // }
 
           // Node Column Right
           // We use .sticky-anchor as an anchor
-          if (window_top > node_column_right_top) {
-              $('.node-column-sidebar-right').addClass('sticky');
-              $('.sticky-anchor').height($('.node-column-sidebar-right').outerHeight());
-          } else {
-              $('.node-column-sidebar-right').removeClass('sticky');
-              $('.sticky-anchor').height(0);
-          }
+            // The following is commented, as non needed in the layout latest version
+          // if (window_top > node_column_right_top) {
+          //     $('.node-column-sidebar-right').addClass('sticky');
+          //     $('.sticky-anchor').height($('.node-column-sidebar-right').outerHeight());
+          // } else {
+          //     $('.node-column-sidebar-right').removeClass('sticky');
+          //     $('.sticky-anchor').height(0);
+          // }
 
 
       }
@@ -758,7 +771,7 @@
           document.getElementById( 'video-embed' ).addEventListener( 'dragstart', function drag( $evt ) {
               var evt = { data: { $: $evt } }; // Create CKEditor event.
 
-              // Create data transfer facade so we can set custom data types (like 'commet').
+              // Create data transfer facade so we can set custom data types
               CKEDITOR.plugins.clipboard.initDragDataTransfer( evt );
               evt.data.dataTransfer.setData( 'video-embed', true );
 
@@ -779,7 +792,6 @@
                 // Embed the video on sidebar
                 $('#video-embed').html('<div class="video-embed-overlay"></div>' + videoEmbed.convertMedia(html) );
               });
-              
           },
           // Converts URLs to embedded items
           convertMedia: function(html){

@@ -26,11 +26,11 @@
         // Show submit button
         $('#edit-submit-stories').show();
       });
-      $('.views-exposed-form input').focusout(function(){
+      $('.views-exposed-form').focusout(function(){
         // Show links
         $('.views-exposed-form .form-radios').removeClass('mobile-hidden');
         // Hide submit button
-        $('#edit-submit-stories').hide();
+        // $('#edit-submit-stories').hide();
       });
         
       // Submit on radio value change = This because we disable 'autosubmit'

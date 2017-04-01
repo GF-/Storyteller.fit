@@ -21,26 +21,11 @@
 17.Comments
 18.Votes
 19.IE
+20.Taxonomy
 
 ++.Breakpoints
 
-Font sizes: 16px base font with 24px line-height
-------------------------------------------------
-       font-size / line-height / margin-top
-------------------------------------------------
-40px = 2.5em     / 1.2         / 0.6em
-32px = 2em       / 1.5         / 0.75em
-24px = 1.5em     / 1           / 1em
-20px = 1.25em    / 1.2         / 1.2em
-16px = 1em       / 1..5        / 1.5em
-14px = 0.875em   / 1.7143      / 1.7143em
-13px = 0.8125em  / 1.8462      / 1.8462em
-12px = 0.75em    / 2           / 2em
-10px = 0.625em   / 2.4         / 2.4em
 
-Equation for font sizing: 
-  Desired px ÷ Default (or parent) px = em size
-------------------------------------------------*/
 
 /**
  * 0.RESET 
@@ -50,6 +35,7 @@ Equation for font sizing:
 
 html {
   box-sizing: border-box;
+  overflow-x: hidden; /* useful for cke iframe > html */
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -109,7 +95,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
         }
 
 h1, .h1 {
-  margin-top: 0.75em;
+  margin: 0;
 }
 
 h2, .h2 {
@@ -138,7 +124,7 @@ h2, .h2 {
   }
 
 h3, .h3 {
-  margin-top: 1.2em;
+  margin-top: 1.75rem;
 }
 
 h4, h5, h6, .h4, .h5, .h6 {
@@ -149,7 +135,7 @@ h4, h5, h6, .h4, .h5, .h6 {
 }
 
 p {
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 1em 0;
 }
 
@@ -163,10 +149,18 @@ p {
   }
     p,
     #container .field-name-body,
-    #container .field-name-body p {
+    #container .field-name-body p,
+    body.cke_editable {
       font-size: 1.1875rem;
+      line-height: 1.7;
       word-break: break-word; /*Experimental*/
     }
+
+       /* Adjust on FF */
+      body.cke_editable .photos.inline-block {
+        display: block !important;
+      }
+
       
 
     header,
@@ -287,7 +281,7 @@ em {
 
 
 #container {
-  background-color: #f2f2f2;
+  /*background-color: #f2f2f2;*/
   padding-top: 3.75rem;
   padding-bottom: 10rem;
 }
@@ -485,16 +479,18 @@ body.sidebar-second #sidebar-second {
 
 /* Story strapline */
 
-  /* No strapline needed for logged-in user */
-  body.logged-in .strapline {
+  body.logged-in .strapline .strap, /* No strapline initially visible for logged-in user */
+  body.not-logged-in .strapline .strap.club /* No Club strapline for anon */ {
     display: none;
   }
 
   .strapline {
     background: #d9d9d9;
-    padding: .5rem 1rem;
     border-radius: 0 0 4px 4px
   }
+    .strapline .strap {
+      padding: .5rem 1rem;
+    }
     .strapline span {
       font-size: .8125rem;
       padding: .25rem;
@@ -502,6 +498,10 @@ body.sidebar-second #sidebar-second {
     .strapline a {
       word-wrap: nowrap;
     }
+      .strapline .club a {
+        font-size: .9375rem;
+      }
+
     .strapline img {
       height: 40px;
     }
@@ -638,10 +638,7 @@ ul.inline li {
 /* admin tabs */
 
 .tabs-wrapper {
-    position: absolute;
-    right: 0;
-    margin: 0 1rem;
-    z-index: 1;
+    margin: .5rem 0;
 }
   .tabs-wrapper li:first-child{
     display: none;
@@ -818,6 +815,13 @@ ul.secondary a.active {
   top: 1.6667em;
 }
 
+  
+  /* Footer not visible on Story node */
+  body.page-node-add #footer,
+  body.page-node-edit #footer {
+    display: none;
+  }
+
 /**
  * 11.CSS SUPPORT
  *
@@ -898,6 +902,10 @@ img {
   margin: 1px auto 0;
   box-shadow: 0px 0px 0px 1px #ccc; /* #eee for Desktop */
  }
+    /* Sticky row */
+    .stories-list-forum .views-row.sticky .white-bg {
+      background-color: rgb(231, 240, 243);
+    }
 
  .stories-list-forum .avatar img {
   border-radius: 50%;
@@ -907,10 +915,12 @@ img {
   margin-top: 0;
   font-size: 1.125rem;
   padding: .5rem 0 .125rem 0;
+  word-break: break-word;
  }
   /* Language */
   .stories-list-forum h3 .language {
     margin-left: 1rem;
+    margin-top: .25rem;
     font-weight: normal;
     font-family: Arial, sans-serif;
    }
@@ -930,7 +940,9 @@ img {
     font-size: .9375rem;
   }
 
-
+  .stories-list-forum span.date {
+    white-space: nowrap;
+  }
 
 
   /* Activity type */
@@ -1088,24 +1100,86 @@ img {
      box-shadow: none;
      border: none;
   }
+    /* Prevent the textarea html content from showing up on page load */
+    textarea#edit-body-und-0-value {
+      display: none;
+    }
+
+  .cke_inner {
+    background: #fafafa !important;
+  }
     
   /* Hiding the img button; so to preserve its functionality, but only for dragging images within the editor */
-  /* no clue why this does not work:
-     .cke_button .cke_button__image
-  */
-    #cke_18 {display: none;}
-
-    /* Moving the CKE toolbar on the left */
-    #cke_1_top {
-      margin-left: -1rem;
-      border: none;
+    .cke_button.cke_button__image {
+      display: none !important;
     }
+
+    /* CKE toolbar */
+    #cke_1_top {
+      padding: 0 1rem;
+      border: none;
+      background: transparent;
+      opacity: 0;
+      -webkit-transition: .3s opacity ease-in;
+      transition: .3s opacity ease-in;
+    }
+      .cke_focus #cke_1_top {
+        opacity: 1;
+      }
+
+
+    /* CKE buttons: custom styles */
+    .cke_1 .cke_toolgroup {
+      background-color: #fafafa !important;
+      padding: .25rem 0;
+    }
+
+    a.cke_button {
+      width: 21px;
+      height: 26px !important;
+    }
+      a.cke_button .cke_button__bold_icon,
+      a.cke_button .cke_button__italic_icon,
+      a.cke_button .cke_button__link_icon,
+      a.cke_button .cke_button__h3_icon {
+          background-size: cover !important;
+          background-position: 0 0 !important;
+          width: 20px;
+          height: 20px;
+      }
+        a.cke_button .cke_button__bold_icon {
+          background-image: url(img/icon-cke-bold.png) !important;
+        }
+        a.cke_button .cke_button__italic_icon {
+          background-image: url(img/icon-cke-italic.png) !important;
+        }
+        a.cke_button .cke_button__link_icon {
+          background-image: url(img/icon-cke-link.png) !important;
+        }
+        a.cke_button .cke_button__h3_icon {
+          background-image: url(img/icon-cke-title.png) !important;
+        }
+
+
+    /* CKE body */
+    body.cke_editable {
+      padding: 0 1rem;
+    }
+
+      /* Images within CKE body */
+      body.cke_editable img {
+        max-width: calc(100% + 2rem);
+        width: calc(100% + 2rem);
+        margin-left: -1rem;
+      }
+
 
 /* Sticky bar */
 .cke_top.sticky {
     position: fixed;
     top: 60px;
     width: calc(1148px - 33rem);
+    z-index: 3;
 }
 
 
@@ -1136,44 +1210,83 @@ img {
       border-bottom: 2px solid #F26D3A;
     }
 
+      select:focus,
+      textarea:focus,
+      input:focus {
+          outline: none;
+      }
+
     /* Activities select */
     .node-column-main .form-type-select {
-      padding: 1rem;
-      margin-left: -1rem;
-      /*border-radius: 4px;
-      background-color: #f2f2f2;*/
+      padding: 0 1rem;
+    }
+
+    /* Link to Strava activity: Hidden on node-add */
+    body.page-node-add-story form .story-columns .activity_data p.strava-activity {
+      display: none;
     }
 
     /* Title textarea */
-    .form-textarea-wrapper {
-      /*width: 35rem;*/
-    }   
+    .form-item-field-title-textarea-und-0-value {
+      padding: 0 1rem;
+    }
+
+    .form-textarea-wrapper {}   
       .form-textarea-wrapper .grippie {
         display: none;
       }
       .field-name-field-title-textarea {
         margin-top: 2rem;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
       }
-    form#story-node-form textarea#edit-field-title-textarea-und-0-value {
-      font-size: 1.5rem;
+
+    /* Body */
+    .field-name-body {
+      padding-top: 0;
     }
-    form#story-node-form textarea#edit-field-title-textarea-und-0-value.expanded {
+    .form-item-body .form-item {
+      margin-top: 0;
+    }
+
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value {
+      font-family: 'Arimo', sans-serif;
+      font-size: 1.5rem;
+      line-height: 2rem;
+      font-weight: bold;
+    }
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value.expanded,
+    form#story-node-form .form-item-field-title-textarea-und-0-value  {
       min-height: 6rem;
     }
-    /* Textarea placeholder */
-    .placeholder {
-      margin-top: 1rem;
-      font-size: 1.25rem;
-      line-height: 1.6;
-      color: #222 !important;
-    }
+      /* Textarea placeholder */
+      .placeholder {
+        margin-top: 1rem;
+        font-size: 1.25rem;
+        line-height: 1.6;
+        color: #666 !important;
+      }
+      /* Show Title-textarea label on focus */
+      .field-name-field-title-textarea .form-type-textarea {
+        position: relative;
+      }
 
+      .field-name-field-title-textarea label {
+        position: absolute;
+        opacity: 0;
+        transition: .2s bottom, .2s opacity;
+        bottom: 0;
+        left: 1rem;
+        z-index: 1;
+      }
 
-  textarea:focus, input:focus, select:focus{
-      outline: none;
-  }
+      .field-name-field-title-textarea label.visible {
+        bottom: 95%;
+        line-height: 1;
+        opacity: 1;
+        padding: .25rem;
+      }
 
+  /* Other field labels */
   label {
     padding: 0 .25rem;
     font-size: .9375rem;
@@ -1187,6 +1300,7 @@ img {
         left: -1000rem;
       }
 
+
   /* Image Upload field */
   .node-column-sidebar-right .field-type-image label,
   .node-column-sidebar-right .field-type-image legend,
@@ -1198,12 +1312,9 @@ img {
     /* Replacing the upload button */
     .form-file-wrapper {
       position: relative;
-      width: 12rem;
-      height: 3rem;
-      border-radius: 4px;
-      border: 2px solid green;
-      color: green;
-      background-color: transparent;
+      width: 11.75rem;
+      height: 8.5rem;
+      background: transparent url(img/icon-upload.png) no-repeat center 2rem;
     }
       .form-file-wrapper:before,
       .node-column-sidebar-right .form-file  {
@@ -1215,7 +1326,7 @@ img {
       }
         .form-file-wrapper:before {
           content: 'Upload a new picture';
-          line-height: 3rem;
+          padding-top: 6rem;
           text-align: center;
         }
         .node-column-sidebar-right .form-file {
@@ -1223,7 +1334,9 @@ img {
           cursor: pointer;
         }
 
-      .field-name-field-activity-image .description,
+      .field-name-field-activity-image .description {
+        display: none;
+      }
       .link-field-url .description {
         padding-top: .5rem;
         font-size: .8125rem;
@@ -1231,22 +1344,20 @@ img {
 
     .node-column-sidebar-right .form-file {
       opacity: 0;
-      width: 12rem;
-      height: 3rem;
+      width: 100%;
+      height: 8.5rem;
     }
 
   /* Embed video */
 
     /* Videos on form */
     .cke_editable iframe,
-    .cke_editable video {
-      width: 100%;
-    }
-
+    .cke_editable video,
     /* Videos on node-view page */
     .field-name-body iframe,
     .field-name-body video {
-      width: 100%;
+      width: calc(100% + 2rem);
+      margin-left: -1rem;
     }
 
     /* Videos on views */
@@ -1262,16 +1373,17 @@ img {
     /* Wrapper */
     .form-actions.form-wrapper {
       display: inline-block;
+      padding-left: 1rem;
     }
 
     form input[type=submit],
     .tabs.primary li a,
     .button {
       background-color: transparent;
-      border: 2px solid;
+      border: 1px solid;
       border-radius: 4px;
-      padding: .3rem .5rem;
-      font-size: 1rem;
+      padding: .4rem .6rem;
+      font-size: 1.0625rem;
       cursor: pointer;
       transition: .2s all ease-out;
       -webkit-transition: .2s all ease-out;
@@ -1333,8 +1445,7 @@ img {
         }
 
       form .draft-button {
-        /*padding: .45rem .6rem;*/
-        padding: .3rem .5rem;
+        padding: .5rem;
       }
 
       /* Delete buttons */
@@ -1414,7 +1525,11 @@ img {
     #edit-field-summary-polyline,
     #edit-field-description,
     #edit-field-language,
-    #edit-field-cover-image {
+    #edit-field-cover-image,
+    #edit-field-streamlatlng,
+    #edit-field-streamdistances,
+    #edit-field-streamaltitudes,
+    #edit-field-streamvelocity {
       display: none;
     }
 
@@ -1436,7 +1551,12 @@ img {
     .node-view-wrapper .field-name-field-description,
     .node-view-wrapper .field-name-field-embed-link,
     .node-view-wrapper .field-name-field-cover-image,
-    .node-view-wrapper .field-name-field-language {
+    .node-view-wrapper .field-name-field-language,
+    .node-view-wrapper .field-name-field-story-tags, /*tags*/
+    .node-view-wrapper .field-name-field-streamlatlng,
+    .node-view-wrapper .field-name-field-streamdistances,
+    .node-view-wrapper .field-name-field-streamaltitudes,
+    .node-view-wrapper .field-name-field-streamvelocity {
       display: none;
     }
 
@@ -1458,7 +1578,7 @@ img {
 
         .story-columns .node-column-sidebar-right .field-name-field-activity-image .sticky-table input[value=Remove] {
           border: none;
-          font-size: .9375rem;
+          font-size: .875rem;
         }
 
         .story-columns .node-column-sidebar-right div.image-preview img {
@@ -1466,7 +1586,7 @@ img {
         }
       
       
-      /* All this is for hiding unnecessary items */
+      /* The following is to hide unnecessary items */
         .story-columns .node-column-sidebar-right label,
         .story-columns .node-column-sidebar-right .image-widget-data span,
         .story-columns .node-column-sidebar-right .messages {
@@ -1498,18 +1618,31 @@ img {
     /* Sidebar right: Embed Videos and Images */
     .story-columns .node-column-sidebar-right .field-type-link-field {
       margin-top: 1.5rem;
+      text-align: center;
     }
 
-    .story-columns .node-column-sidebar-right .field-type-link-field .form-item {
+    .story-columns .node-column-sidebar-right .field-type-link-field .form-item.form-item-field-embed-link-und-0 {
       margin-top: 0;
       margin-bottom: .5rem;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: .5rem;
+      width: calc(100% - 4rem);
     }
 
     .story-columns .node-column-sidebar-right input[type=text]#edit-field-embed-link-und-0-url {
       max-width: 100%;
       margin-top: .25rem;
       font-size: 1rem;
+      -webkit-transition: .1s all ease-in;
+      transition: .1s all ease-in;
     }
+        .story-columns .node-column-sidebar-right input[type=text]#edit-field-embed-link-und-0-url:focus {
+          border-bottom: 2px solid orangered;
+          /*position: relative;
+          max-width: 10;
+          left: -50px;*/
+        }
 
     .story-columns .node-column-sidebar-right .embeds {
       width: 100%;
@@ -1617,7 +1750,7 @@ img {
         transition: .2s all ease-out;
       }
 
-      .views-exposed-form .views-exposed-widget input:focus {
+      .views-exposed-form .views-exposed-widget input#edit-combine:focus {
         border-bottom: 2px solid #F26D3A;
         width: 13rem;
         right: 4rem;
@@ -1666,23 +1799,23 @@ form.contact-form {
  */
 
 div.status.messages {
-  background: #be7;
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 1.125rem;
+    background: #be7;
     display: inline-block;
     padding: .7rem 1.5rem;
     margin: 2rem 1rem;
     border-radius: 4px;
 }
-  /* Front page*/
-  body.front div.status.messages {
-    position: absolute;
-    z-index: 2;
-    top: -1rem;
-    left: 0rem;
-  }
 
+  div.status.messages li {
+    list-style-type: none;
+    margin: 1rem 0;
+  }
   div.status.messages em {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.125rem;
+    color: #222 !important;
   }
 
 
@@ -1709,10 +1842,27 @@ div.status.messages {
 
   /* Share buttons */
 
+    .share-box {
+      margin-top: 3rem;
+      padding: .5rem 1.5rem;
+      background: rgba(238, 240, 241, 0.65);
+      border-radius: 4px;
+      box-shadow: 0 0 20px #ccc;
+    }
+    
+    #container .share-box p.georgia {
+      text-align: left;
+      font-size: 1.25rem;
+      margin-bottom: .5rem;
+      margin-right: 1rem;
+    }
+    .share-box .rate-button {
+       font-size: 1.75rem;
+    }
 
     /* On story */
     .share-buttons {
-      margin-top: 2rem;
+      
     }
 
     .fb-share-button,
@@ -1767,6 +1917,7 @@ div.status.messages {
    /* Switch for Disabling comments, on node/add/edit */
    .comments-switch {
       padding-bottom: 1rem;
+      padding-left: 1rem;
       display: block;
    }
      .comments-switch label {
@@ -1818,6 +1969,10 @@ div.status.messages {
   .comment-user-avatar {
     margin-right: 1rem;
   }
+    .comment-form-container .comment-user-avatar {
+      position: relative;
+      top: 4rem;
+    }
 
   .comment-avatar {
     margin-right: .5rem;
@@ -1828,7 +1983,9 @@ div.status.messages {
   }
 
   .comments-wrapper .comment-form textarea,
-  .comments-wrapper .field-name-comment-body .field-item {
+  .comments-wrapper .field-name-comment-body .field-item,
+  #container .comments-wrapper .field-name-comment-body .field-item p
+   {
     font-family: Georgia, Times, "Times New Roman", serif;
     font-size: 1.125rem;
     line-height: 1.75rem;
@@ -1845,6 +2002,11 @@ div.status.messages {
       .comments-wrapper .comment-form textarea.expanding {
         min-height: 3rem;
       }
+
+    .comments-wrapper video,
+    .comments-wrapper iframe {
+      width: 100%;
+    }
 
 /* Comment form */
 
@@ -1907,7 +2069,10 @@ div.status.messages {
 /* Comment inline links */
 
   .comments-wrapper .comment-data ul.inline.links {
-    display: none;
+    /* Better-comments module throws an error if this is :hidden */
+    /*display: none;*/
+    position: absolute;
+    left: -4000rem;
   }
 
   /* Anonymous user 
@@ -2110,6 +2275,101 @@ div.status.messages {
     }
 
 
+/**
+ * 20.Taxonomy
+ *
+ */
+
+/* Add/Edit story */
+  .field-name-field-tags-story {
+    margin: 1rem 0;
+    padding: 0 1rem;
+  }
+
+  .field-name-field-tags-story label,
+  .field-name-field-tags-story .form-checkboxes {
+    display: inline-block;
+  }
+    .field-name-field-tags-story .form-checkboxes {
+      margin-right: 1rem;
+    }
+
+  .stories-list-forum span.term, /* Stories view: tags for each story */
+  .view-terms .term, /* Story node: Views listing tags of this node */
+  .field-name-field-tags-story .form-checkboxes .form-item {
+    display: inline-block;
+    margin-right: .5rem;
+  }
+
+  .field-name-field-tags-story input {
+    display: none;
+  }
+  
+  .stories-list-forum .term,
+  .view-terms .term, /* Views tag */
+  .field-name-field-tags-story label.option {
+    display: inline-block;
+    padding: .125rem .3125rem;
+    font-family: Arial, sans-serif;
+    font-size: .75rem;
+    font-weight: normal;
+    cursor: pointer;
+    border-radius: 4px;
+    /* default / unchecked look */
+    color: #777;
+    border: 1px solid #ddd;
+    transition: .2s all ease-out;
+    -webkit-transition: .2s all ease-out;
+  }
+    
+    .stories-list-forum .term,
+    .view-terms .term, /* Views tag */
+    .field-name-field-tags-story input:checked ~ label.option {
+      color: #444;
+      border-color: transparent;
+    }
+  
+      .field-name-field-tags-story .form-item-field-tags-story-und-1 label.option:hover {
+        color: #444;
+        background-color: #eee;
+      }
+
+  /* Colors - for Exposed filters and Views */
+    .stories-list-forum .term.term-1,
+    .view-terms .term.term-1,
+    .field-name-field-tags-story .form-item-field-tags-story-und-1 input:checked ~ label.option {
+      background-color: #FBD6C8;
+    }
+    .stories-list-forum .term.term-2,
+    .view-terms .term.term-2,
+    .field-name-field-tags-story .form-item-field-tags-story-und-2 input:checked ~ label.option {
+      background-color: #E7D2F1;
+    }
+    .stories-list-forum .term.term-3,
+    .view-terms .term.term-3,
+    .field-name-field-tags-story .form-item-field-tags-story-und-3 input:checked ~ label.option {
+      background-color: #C8D2F1;
+    }
+    .stories-list-forum .term.term-4,
+    .view-terms .term.term-4,
+    .field-name-field-tags-story .form-item-field-tags-story-und-4 input:checked ~ label.option {
+      background-color: #C8E7D2;
+    }
+    .stories-list-forum .term.term-5,
+    .view-terms .term.term-5,
+    .field-name-field-tags-story .form-item-field-tags-story-und-5 input:checked ~ label.option {
+      background-color: #FBF1C8;
+    }
+
+
+  /* Views exposed filter */
+
+    /* Terms filter is hidden for now */
+    #edit-field-tags-story-value-wrapper {
+      display: none;
+    }
+
+
 
 /**
  * xx.Breakpoints
@@ -2202,8 +2462,6 @@ div.status.messages {
     display: none;
   }
 
-
-
   /* Container */
   
   #container {
@@ -2211,12 +2469,15 @@ div.status.messages {
   }
 
   /* Story node: layout */
+    body.page-node-add-story #container,
+    body.page-node-edit.node-type-story #container,
+    body.node-type-story .node-view-wrapper {
+      background: #fafafa;
+    }
   .story-columns {
     flex-direction: column;
     position: relative;
-    margin-top: 1rem;
-    
-    max-width: 40rem;
+    margin-top: 0;
     margin-left: auto;
     margin-right: auto;
   }
@@ -2224,51 +2485,60 @@ div.status.messages {
 
   /* Sorting columns */
   .story-columns .node-column-sidebar-right {
-    order: 3;
-  }
-  .story-columns .node-column-sidebar-left {
-    order: 1;
-  }
-  .story-columns .node-column-main {
     order: 2;
   }
+  .story-columns .node-column-main {
+    order: 1;
+    /*max-width: 50rem;*/
+  }
 
-    .story-columns .node-column-main {}
+  /* Story node view: Author/Athlere data */
+  .node-view-wrapper .author-data {
+    padding: 1rem 0;
+  }
 
-      /* Story node form: Sidebar left*/
-      .story-columns .node-column-sidebar-left {}
+  /* Activity data */
+  .node-view-wrapper .activity_data {
+    padding: 1.5rem 0 2rem 0;
+  }
 
-          .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p {
-            display: inline-block;
-            vertical-align: middle;
-            margin-top: 0;
-            padding: 0 0 0 .5rem;
-          }
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.type {
-              padding: 0 .5rem 0 1.25rem;
-            }
-            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.moving-time {
-              padding-left: 4.5rem;
-            }
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.date,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.avg-speed,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.pace {
-              visibility: hidden;
-              position: absolute;
-              left: -1000rem;
-            }
-              form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity {
-                visibility: visible;
-                position: static;
-                left: 0;
-                width: calc(100% - 5rem);
-              }
+  .story-columns .activity_data p {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+  }
 
-
-          .story-columns .node-column-sidebar-left .icon {
-            width: 2rem;
-          }
+    .story-columns .activity_data p.type {
+      padding: 0 .5rem 0 0;
+    }
+    #container .story-columns .activity_data p.distance,
+    #container .story-columns .activity_data p.moving-time,
+    #container .story-columns .activity_data p.elevation {
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1.25;
+      padding: 0 0 0 .5rem;
+    }
+      #container .story-columns .activity_data p span.light-grey {
+        font-weight: normal;
+      }
+    form .story-columns .activity_data p.moving-time {
+      padding-left: 4.5rem;
+    }
+    /* Hiding the following items */
+    .story-columns .activity_data p.date,
+    .story-columns .activity_data p.avg-speed,
+    .story-columns .activity_data p.pace,
+    .story-columns .activity_data p.strava-activity {
+      visibility: hidden;
+      position: absolute;
+      left: -1000rem;
+    }
+        .story-columns .activity_data .icon {
+          width: 2rem;
+        }
 
       /* Sticky: anchor */
       .sticky-anchor {
@@ -2276,7 +2546,8 @@ div.status.messages {
       }
 
 
-      /* Front page: Sidebar right hidden on mobile and portrait tablet */
+  /* Front page: Sidebar right hidden on mobile and portrait tablet */
+  
       body.front .story-columns .node-column-sidebar-right {
         display: block;
         overflow-x: hidden;
@@ -2346,55 +2617,55 @@ div.status.messages {
         text-align: center;
       }
 
-      /* Story node form: Sidebar right */
-      .story-columns .node-column-sidebar-right {
-        overflow: auto;
+
+      
+      /*.node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {*/
+      #main img.round {
+        width: 3rem;
+        height: 3rem;
+        margin-right: .5rem;
+        cursor: auto;
       }
 
-        /* Story node form: Sidebar right */
-        .story-columns .node-column-sidebar-right .athlete-info{
-          max-width: 13rem;
+    /* User page - athlete box */
+      #main .athlete-box {
+        margin: 0 0 2rem 0;
+        padding: 3rem 0;
+        background: #fafafa;
+      }
+        #main .athlete-box .inner {
+          width: auto;
+          max-width: 32rem;
         }
-
-        /* Right column on node/view */
-
-          .node-view-wrapper.story-columns .node-column-main .author-data {
-            padding-top: 1.5rem;
+      /* Athlete avatar */
+      #main .athlete-box img.round {
+        width: 4rem;
+        height: 4rem;
+        margin-top: .5rem;
+      }
+      #main .athlete-avatar {
+        margin-right: .5rem;
+      }
+      /* Athlete info */
+      .athlete-box .athlete-info {
+        max-width: calc(100% - 6rem);
+      }
+      #main .athlete-box .athlete-info p {
+        margin: .25rem 0;
+      }
+        #main .athlete-box .athlete-info p.grey {
+          margin: 0;
+        }
+      /* Add-a-Story button */
+       .story-add {
+          margin-top: 3rem;
+          text-align: center;
+        }
+          .story-add span {
+            display: block;
+            padding-top: .5rem;
           }
 
-          /*.node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {*/
-          .node-view-wrapper.story-columns .node-column-main img.round {
-            width: 3rem;
-            height: 3rem;
-            margin-right: .5rem;
-            cursor: auto;
-          }
-
-            /* Bigger avatar on page user */
-            body.page-user .node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {
-              width: 4rem;
-              height: 4rem;
-            }
-          
-          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h1,
-          .node-view-wrapper.story-columns .node-column-sidebar-right.padding h3 {
-            font-size: 1.125rem;
-            line-height: 1.2rem;
-            margin-top: .2rem;
-          }
-
-              .node-view-wrapper.story-columns .node-column-sidebar-right.padding h3 a {
-                color: #222;
-              }
-
-          .node-view-wrapper.story-columns .node-column-main .author-data a {
-            font-size: .9375rem;
-          }
-
-          .node-view-wrapper.story-columns .node-column-sidebar-right.padding p {
-            font-size: .875rem !important;
-            margin: .2rem 0 .5rem 0;
-          }
 
 
         /* On mobile, node type Story: main column and right sidebar */
@@ -2533,19 +2804,41 @@ div.status.messages {
   */
 
   .white-bg {
-    padding: 0 1.5rem;
+    padding: 1.5rem;
+  }
+    #story-node-form .white-bg {
+      padding: 1rem 0;
+    }
+
+  .field-name-body img,
+  .field-name-body iframe,
+  .field-name-body video,
+  /* Videos on form */
+  .cke_editable iframe,
+  .cke_editable video {
+    max-width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  .field-name-body #map {
+    width: 100%;
+    height: 250px;
+    margin: 1rem 0 0 0;
+  }
+  .field-name-body .chart {
+    width: 100%;
+    margin: 0 0 1rem 0;
   }
 
-  /* Story add button, on user Profile page */
-   .white-bg.story-add {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-      text-align: center;
+    /* All iframes but CKE itself */
+    .field-name-body iframe.cke_wysiwyg_frame {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      background: #fafafa;
     }
-      .story-add span {
-        display: block;
-        padding-top: .5rem;
-      }
+    
 
   /**
    * 12.VIEWS
@@ -2569,6 +2862,8 @@ div.status.messages {
     margin-top: 4.25rem;
     margin-left: 1rem;
   }
+
+
   /* User avatar */
  .stories-list-forum .avatar {
     margin-right: .5rem;
@@ -2783,8 +3078,6 @@ div.status.messages {
    */
 
    form .story-columns .node-column-sidebar-right {
-    /*display: none;*/
-
     position: fixed;
     top: 0;
     left: 0;
@@ -2795,10 +3088,18 @@ div.status.messages {
     overflow-y: hidden;
     z-index: 2;
     white-space: nowrap; /* Important so that it can scroll horizontally */
-
-    background: #fafafa;
-    box-shadow: 0px 0px 0px 1px #ccc;
    }
+
+   /*CKEditor toolbar hidden on mobile */
+   #cke_1_top {
+      visibility: hidden;
+    } 
+
+
+    /* Activity data */
+    .node-add-wrapper .activity_data {
+      padding: 0 1rem;
+    }
 
     .story-columns .node-column-sidebar-right p,
     .story-columns .node-column-sidebar-right .photos,
@@ -2832,7 +3133,6 @@ div.status.messages {
     .story-columns .node-column-sidebar-right .field-type-image {
       display: inline-block;
       vertical-align: middle;
-      height: 60px;
     }
 
     .story-columns .node-column-sidebar-right .field-type-image table,
@@ -2844,7 +3144,9 @@ div.status.messages {
         display: none;
       }
 
-
+  .form-actions.form-wrapper {
+      margin-top: 3rem;
+  }
 
 
 
@@ -2932,6 +3234,13 @@ div.status.messages {
    *
    */
 
+  p,
+  #container .field-name-body,
+  #container .field-name-body p,
+  body.cke_editable {
+    font-size: 1.25rem;
+   }
+
    #site-slogan {
     margin: 1rem auto 1rem 1rem;
    }
@@ -2968,16 +3277,52 @@ div.status.messages {
         }
 
         body.front .story-columns .node-column-sidebar-right .sidebar-inner-right video {
+          top: 76px;
+          left: 19px;
+          width: 262px;
+          height: 305px;
+          /* Previous:
           top: 91px;
           left: 18px;
           width: 262px;
-          height: 228px;
+          height: 228px;*/
         }
 
 
-     /* Story node form: Sidebar right */
-      .story-columns .node-column-sidebar-right .athlete-info{
-        max-width: none;
+    /* Story node view */
+  .node-view-wrapper .white-bg {
+      padding: 2rem;
+      margin: 0 auto;
+  }
+
+    /* Main column: Author data */
+    .author-data {
+      padding: 2rem 0;
+    }        
+
+    /* Activity data */
+
+    .activity_data {
+      padding: 0 2rem;
+    }
+
+    #container .story-columns .activity_data p.distance,
+    #container .story-columns .activity_data p.moving-time,
+    #container .story-columns .activity_data p.elevation {
+      font-size: 1.25rem;
+      line-height: 1.125;
+      padding-left: 1rem;
+    }
+
+      .story-columns .activity_data .icon {
+        width: 2.5rem;
+      }
+
+      .story-columns .activity_data p.strava-activity {
+        visibility: visible;
+        position: static;
+        left: 0;
+        margin-left: 2rem;
       }
 
       /* Static pages */
@@ -2990,6 +3335,19 @@ div.status.messages {
         .node-type-story .language .native {
           display: inline-block;
         }
+
+
+    /* User page */
+
+    /* Athlete avatar */
+      #main .athlete-box img.round {
+        width: 5rem;
+        height: 5rem;
+      }
+
+        #main .athlete-avatar {
+          margin-right: 1.25rem;
+        } 
 
 
   /**
@@ -3009,8 +3367,11 @@ div.status.messages {
 
   .strapline {
     background: #e7e7e7;
-    padding: .5rem 2rem;
   }
+    .strapline .strap {
+      padding: .5rem 2rem;
+      text-align: center;
+    }
     .strapline span {
       font-size: .8125rem;
     }
@@ -3039,6 +3400,38 @@ div.status.messages {
     padding-left: 1rem;
     padding-right: 1rem;
    }
+
+  /**
+  * 11.CSS SUPPORT
+  *
+  */
+
+  .white-bg {
+    padding: 2rem;
+  }
+
+    /* Node view: full-width images over padding */
+   .field-name-body img,
+    .field-name-body iframe,
+    /* Videos on form */
+    .cke_editable iframe,
+    .cke_editable video,
+    /* Videos on node-view page */
+    .field-name-body iframe,
+    .field-name-body video {
+      max-width: calc(100% + 4rem);
+      margin-left: -2rem;
+    }
+
+    .field-name-body iframe,
+    .field-name-body video,
+    /* Videos on form */
+    .cke_editable iframe,
+    .cke_editable video {
+      width: calc(100% + 4rem);
+      height: 450px;
+    }
+
 
 
 
@@ -3075,6 +3468,38 @@ div.status.messages {
 
 
 
+  /**
+   * 14.FORMS
+   */
+
+   #cke_1_top {
+      visibility: visible;
+    } /*CKEditor toolbar now visible */
+
+   /* Left-right padding */
+      .node-column-main .form-type-select,  /*Activities select*/
+      .form-item-field-title-textarea-und-0-value, /*Title*/
+      #cke_1_top, /*CKEditor toolbar*/
+      body.cke_editable,  /*CKEditor body*/
+      .field-name-field-tags-story,  /*Tags*/
+      .form-actions.form-wrapper, /*Submit buttons*/
+      .comments-switch /*Checkbox to disable comments*/ {
+        padding: 0 2rem;
+      }
+        body.cke_editable img {
+            max-width: calc(100% + 4rem);
+            width: calc(100% + 4rem);
+            margin-left: -2rem;
+        }
+
+    /* Title textarea label */
+      .field-name-field-title-textarea label {
+        left: 2rem;
+      }
+
+
+
+
 }
 @media (min-width:40.063em) { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
 
@@ -3096,12 +3521,13 @@ div.status.messages {
       }
 
   h1, .h1 {
-      font-size: 1.75em;
-      line-height: 1.4;
-    }
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
 
     h2, .h2 {
       font-size: 1.5em;
+      line-height: 2.125rem;
     }
 
       .how-it-works h2,
@@ -3124,7 +3550,35 @@ div.status.messages {
       margin-left: 1rem;
       max-width: none;
     }
+  
+    /* Story node view */
+  .node-view-wrapper .white-bg {
+      padding: 2rem 3rem;
+      max-width: 48rem;
+      margin: 0 auto;
+  }
 
+    /* Story: width */
+    .story-columns .node-column-main {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Story items */
+    .activity_data {
+      max-width: 42rem;
+      margin: 0 auto;
+    }
+
+    /* Main column: Author data */
+    .author-data {
+      padding: 2rem 0;
+    }
+
+    /* Activity data */
+     .activity_data {
+        padding: 0 3rem 1rem 3rem;
+     }
 
 
     /**
@@ -3179,16 +3633,52 @@ div.status.messages {
    *
    */
 
-    /* Story add button, on user Profile page */
-     .white-bg.story-add {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        text-align: left;
+  .white-bg {}
+
+  /* On Story node view: media items are larger than the container */
+    
+    /* Images */
+    .field-name-body img {
+      max-width: 1280px;
+      width: auto;
+      margin: 1rem 0;
+      transform: translate(-50%, 0);
+      position: relative;
+      left: 50%;
+    }
+      /* Not for the images on the #map */
+      .field-name-body #map img {
+        margin: 0;
+        transform: none;
+        left: 0;
       }
-        .story-add span {
-          display: inline;
-          padding-top: 0;
-        }
+    .field-name-body #map {
+      height: 350px;
+      min-width: 100%;
+      width: 1024px;
+      transform: translate(-50%, 0);
+      position: relative;
+      left: 50%;
+    }
+    .field-name-body .chart {
+        width: 800px;
+        transform: translate(-50%, 0);
+        position: relative;
+        left: 50%;
+    }
+
+    /* Videos on node-view page */
+    .field-name-body iframe,
+    .field-name-body video {
+        max-width: 1024px;
+        width: 100%;
+        margin: 1rem 0;
+        transform: translate(-50%, 0);
+        position: relative;
+        left: 50%;
+    }
+
+
 
   /**
    * 12.VIEWS
@@ -3248,7 +3738,7 @@ div.status.messages {
         padding: .3rem 0 .6rem 0;
       }
 
-      .views-exposed-form .views-exposed-widget input:focus {
+      .views-exposed-form .views-exposed-widget input#edit-combine:focus {
         width: 20rem;
         right: 5rem;
       }
@@ -3440,6 +3930,81 @@ div.status.messages {
       }
 
 
+
+  /**
+   * 14.FORMS
+   */
+
+   /* Left-right padding */
+      .node-column-main .form-type-select,  /*Activities select*/
+      .form-item-field-title-textarea-und-0-value, /*Title*/
+      #cke_1_top, /*CKEditor toolbar*/
+      body.cke_editable,  /*CKEditor body*/
+      .field-name-field-tags-story,  /*Tags*/
+      .form-actions.form-wrapper, /*Submit buttons*/
+      .comments-switch /*Checkbox to disable comments*/ {
+        padding: 0 3rem;
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+
+
+        /* Title textarea: limiting width */
+        .form-item-field-title-textarea-und-0-value {
+          /*padding-right: 8rem;*/
+        }
+        /* Title textarea label */
+        .field-name-field-title-textarea label {
+          left: 3rem;
+        }
+        #cke_1_top /*CKEditor toolbar*/ {
+          max-width: 42rem;
+        }
+          /* Sticky bar */
+          #cke_1_top.sticky {
+              margin-left: calc((100% - 48rem)/2);
+          }
+        /*CKEditor body Placeholder */
+        body.cke_editable.placeholder {
+          margin-top: 1rem;
+        }
+        /* Images on cke body */
+        body.cke_editable img {
+          max-width: 1280px;
+          width: auto;
+          margin: 1rem 0;
+          transform: translate(-50%, 0);
+          position: relative;
+          left: 50%;
+        }
+        /* Videos on form */
+        .cke_editable iframe,
+        .cke_editable video {
+            max-width: 1024px;
+            width: calc(100% + 6rem);
+            margin: 1rem 0;
+            transform: translate(-50%, 0);
+            position: relative;
+            left: 50%;
+        }
+        /*Submit buttons*/
+        .form-actions.form-wrapper {
+          margin-left: calc((100% - 48rem)/2);
+          padding-right: 1rem;
+        }
+
+
+  /**
+   * 15.Messages
+   *
+   */
+
+  div.status.messages {
+      margin: 2rem auto 2rem 3rem;
+      padding: .7rem 1.5rem;
+  }
+
+
   /**
    * 16.Custom
    *
@@ -3489,6 +4054,18 @@ div.status.messages {
     width: 35rem;
   }
 
+  /* Comment form */
+  .comment-form #cke_1_top {
+    padding-left: 0;
+  }
+  
+  .comment-form .form-actions.form-wrapper {
+      margin-left: 0;
+  }
+    .comment-form .form-actions.form-wrapper {
+        margin: 0;
+        padding: 0;
+    }
 
    /* Switch for Disabling comments, on node/add/edit */
    .comments-switch {
@@ -3497,7 +4074,7 @@ div.status.messages {
       padding: 0;
    }
 
-  .comments-wrapper .inline-block p {
+  .comments-wrapper .inline-block .small p {
     white-space: nowrap;
   }
 
@@ -3544,17 +4121,17 @@ div.status.messages {
 
   /* Story node: layout */
   .story-columns {
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
-    margin-top: 4rem;
+    /*margin-top: 4rem;*/
     max-width: 100%;
   }
-
 
   /* Front main column */
 
   body.front .story-columns {
      margin-top: 2rem;
+     flex-direction: row;
   }
 
   body.front .story-columns .node-column-main {
@@ -3591,168 +4168,51 @@ div.status.messages {
       margin-top: 1.5rem;
     }
 
-
-
-  /* Sorting columns */
-  .story-columns .node-column-sidebar-left {
-    order: 1;
-  }
-  .story-columns .node-column-main {
-    order: 2;
-  }
-  .story-columns .node-column-sidebar-right {
-    order: 3;
-  }
-
-    /* Story node form: Main */
+    /* Main */
     .story-columns .node-column-main {
-      width: calc(1148px - 30rem);
-    
       min-height: 33rem;
-      margin: 0 2rem 0 2.5rem;
-      padding: 0 2rem;
+      z-index: 1;
+      margin: 0;
+      padding: 0;
     }
 
-      /* Story node form: Sidebar left*/
-      .story-columns .node-column-sidebar-left {
-        margin-top: 60px;
-        width: 7rem;
-        text-align: right;
-      }
-        /* Sidebar-inner - used on Sticky */
-          .story-columns .node-column-sidebar-left .sidebar-inner .activity-data {
-            width: 7rem;
+      /* Story node: Activity data */
+          .node-view-wrapper.story-columns .activity_data {
+            margin-left: -5rem;
           }
 
-          .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p {
-            display: block;
-            margin-top: 1rem;
+          .story-columns .activity_data p {
             padding: 0;
           }
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.type {
+            .story-columns .activity_data p.type {
               padding: 0;
+              margin-right: 1.5rem;
             }
-            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity {
+            form .story-columns .activity_data p.strava-activity {
               width: auto;
             }
-            form .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.moving-time {
+
+            form .story-columns .activity_data p.moving-time {
               padding-left: 0;
             }
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.strava-activity,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.date,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.avg-speed,
-            .story-columns .node-column-sidebar-left .sidebar-inner .activity_data p.pace {
-              visibility: visible;
+            .story-columns .activity_data p.date,
+            .story-columns .activity_data p.avg-speed,
+            .story-columns .activity_data p.pace {
+              /*visibility: visible;
               position: static;
-              left: 0;
+              left: 0;*/
             }
 
 
-          .story-columns .node-column-sidebar-left .icon {
-            width: 2rem;
-          }
-
-
-
-    /* Story node form: Sidebar right */
-      form .story-columns .node-column-sidebar-right {
-        position: static;
-        width: 19rem;
-        height: auto;
-        padding: 0;
-        z-index: 1;
-        overflow-x: hidden;
-        overflow-y: auto;
-        background: transparent;
-        box-shadow: none;
-        white-space: normal;
-      }
-      .story-columns .node-column-sidebar-right .sidebar-inner-right {
-        width: 18rem;
-        padding: 0 0 1rem .25rem;
-        max-height: calc(100vh - 80px);
-        overflow: auto;
-        background-color: #f2f2f2;
-      }
-
-
-      /* Restore from mobile status */
-      .story-columns .node-column-sidebar-right .field-type-image .form-item, /* Upload button, not uploaded images (f.ex. from desktop) */
-      .story-columns .node-column-sidebar-right .field-type-link-field, /* Video link */
-      .story-columns .node-column-sidebar-right .embeds /* Video render */ {
-        display: block;
-      }
-      .story-columns .node-column-sidebar-right p,
-      .story-columns .node-column-sidebar-right .photos,
-      .story-columns .node-column-sidebar-right .map {
-        display: block;
-      }
-        .story-columns .node-column-sidebar-right p.mobile {
-          display: none;
-        }
-        .story-columns .node-column-sidebar-right p {
-          margin: 1rem 0;
-        }
-          .story-columns .node-column-sidebar-right p.mobile-hidden {
-            display: block;
-          }
-
-      .story-columns .node-column-sidebar-right .photos img,
-      .story-columns .node-column-sidebar-right .map img,
-      .story-columns .node-column-sidebar-right .field-type-image img {
-        height: auto;
-        display: block;
-        margin-right: 0;
-        margin-bottom: .3rem;
-      }
-
-
-    .story-columns .node-column-sidebar-right .field-type-image {
-      display: block;
-      height: auto;
-    }
-
-    .story-columns .node-column-sidebar-right .field-type-image table {
-      display: table;
-    }
-    .story-columns .node-column-sidebar-right .field-type-image tr {
-      display: table-row;
-    }
-      .story-columns .node-column-sidebar-right .field-type-image td:nth-child(3n+3) {
-        display: table-cell;
-      }
-
-
-        /* Sticky: anchor */
-        .sticky-anchor {
-          display: block;
-          position: absolute;
-          top: -60px;
-        }
-          /* Sticky: anchor */
-          .sticky-anchor.front {
-            top: -80px;
-          }
-
-          .sticky-sidebar.sticky {
-            position: fixed;
-            top: 80px;
-            width: 20rem;
-          }
-
-        /* Sticky Sidebar */
-        /*.story-columns .node-column-sidebar-left.sticky .sidebar-inner,*/
-        .story-columns .node-column-sidebar-right.sticky .sidebar-inner-right {
-          position: fixed;
-          top: 80px;
-        }
 
         /* Right column on node/view */
-        .node-view-wrapper.story-columns .node-column-sidebar-right.padding {
-          margin-top: 2rem;
-          padding-right: 0;
+        .node-view-wrapper.story-columns .node-column-sidebar-right.padding { /* Here we add 'padding' so that we also reset the css styles above */
+          margin: 0;
+          padding: 0;
+          background: transparent;
         }
 
+          .node-view-wrapper.story-columns .node-column-sidebar-right .sidebar-inner-right {}
 
           .node-view-wrapper.story-columns .node-column-sidebar-right.padding img.round {
             width: 4rem;
@@ -3766,37 +4226,66 @@ div.status.messages {
             font-size: 1.25rem;
             margin-top: .5rem;
           }
-          .node-view-wrapper.story-columns .node-column-sidebar-right.padding p {
-            font-size: .9375rem !important;
+
+          .story-columns .node-column-sidebar-right p {
+            display: block;
           }
+            .story-columns .node-column-sidebar-right p.mobile {
+              display: none;
+            }
+            .story-columns .node-column-sidebar-right p {
+              margin: 1rem 0;
+            }
+              .story-columns .node-column-sidebar-right p.mobile-hidden {
+                display: block;
+              }
 
-
-
-          /* Like */
-          .small.grey.description {
-            max-width: 9rem;
-          }
-
-
-
-      /* User page */
-      body.page-user .story-columns {
-        margin-top: 2rem;
-      }
-        body.page-user .story-columns .node-column-main {
-          margin-top: 2rem;
+        /* Restore from mobile status */
+        .story-columns .node-column-sidebar-right .field-type-image .form-item, /* Upload button, not uploaded images (f.ex. from desktop) */
+        .story-columns .node-column-sidebar-right .field-type-link-field, /* Video link */
+        .story-columns .node-column-sidebar-right .embeds /* Video render */ {
+          display: block;
         }
 
+        /* Sticky: anchor */
+        .sticky-anchor {
+          display: block;
+          position: absolute;
+          top: -60px;
+        }
+          .sticky-anchor.front {
+            top: -80px;
+          }
+          .sticky-sidebar.sticky {
+            position: fixed;
+            top: 80px;
+            width: 20rem;
+          }
 
-      /* Resetting from mobile, node type Story: main column and right sidebar */
+      /* Share box */
 
-      .node-type-story .story-columns .node-column-main {
-        padding-bottom: 0;
+      .share-box .share-buttons {
+        vertical-align: top;
+        margin-top: 1.5rem;
+        margin-left: 3rem;
       }
-      .node-type-story .node-column-sidebar-right.padding {
-        margin-top: 0;
-        padding: 1rem;
-        background: transparent;
+          
+
+      /* User page */
+      body.page-user #container .inner {
+        width: 100%;
+      }
+    /* User page layout */
+      body.node-type-story #container .comments-wrapper,
+      body.node-type-story #container .block-views {
+        max-width: 42rem;
+        margin: 1rem auto;
+      }
+    /* User page - athlete box */
+      #main .athlete-box {}
+      #main .athlete-box .inner {
+        max-width: 40rem;
+        margin: 0 auto;
       }
 
 
@@ -3822,12 +4311,6 @@ div.status.messages {
    * 7.NAVIGATION
    */
 
-    .tabs-wrapper {
-      position: static;
-      right: auto;
-      margin: 2rem 0 -2rem 11.5rem;
-    }
-
     #navigation ul#user-menu li a {
       padding: 0 0 0 2rem;
       width: auto;
@@ -3850,15 +4333,6 @@ div.status.messages {
        #footer .info {
         text-align: right;
        }
-
-  /**
-  * 11.CSS SUPPORT
-  *
-  */
-
-  .white-bg {
-    padding: 0 2rem;
-  }
 
 
   /* More stories on Story-node page */
@@ -3906,16 +4380,145 @@ div.status.messages {
         margin: 3rem 0 0 3rem;
         text-align: left;
        }
+      
+      /* On User Page  */
+      .page-user .item-list ul.pager {
+        max-width: 40rem;
+        margin: 3rem auto 0 auto;
+        text-align: left;
+       }
+
+
 
 
   /**
    * 14.FORMS
    */
 
-   form .story-columns .node-column-sidebar-right {
-    display: block;
-   }
+   /* Form template */
+    .node-add-wrapper.story-columns .node-column-main {
+      max-width: calc(100% - 16rem);
+    }
 
+      /* Form: Sidebar right */
+      .node-add-wrapper.story-columns .node-column-sidebar-right {
+        flex: 0 0 16rem;
+      } 
+
+
+
+   /* Title textarea */
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value {
+      font-size: 2rem;
+      line-height: 2.5rem;
+    }
+    form#story-node-form textarea#edit-field-title-textarea-und-0-value.expanded,
+    form#story-node-form .form-item-field-title-textarea-und-0-value  {
+      min-height: 8rem;
+    }
+    
+    /*CKEditor toolbar*/
+    #cke_1_top {
+      max-width: 42rem;
+    }
+      /* Sticky bar */
+      #cke_1_top.sticky {
+          margin-left: calc((100% - 64rem)/2);
+      }
+
+
+  /* Story node form: Sidebar right */
+
+
+    form .story-columns .node-column-sidebar-right {
+      display: block;
+      position: fixed;
+      width: 16rem;
+      left: auto;
+      right: 0;
+      top: 60px;
+      height: calc(100vh - 60px);
+      background-color: #f2f2f2;
+      padding: 0;
+      z-index: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      box-shadow: none;
+      white-space: normal;
+    }
+
+      form .story-columns .node-column-sidebar-right .sidebar-inner-right {
+        width: 100%;
+        padding: 1rem 1rem 10rem 1rem;  /*extra padding at the bottom of the sidebar*/
+        max-height: 100%;
+        overflow: auto;
+        background-color: #f2f2f2;
+      }
+
+      /* Sticky sidebar right */
+      form .story-columns .node-column-sidebar-right.sticky .sidebar-inner-right {}
+
+      /* Activities select */
+      form .form-type-select.form-item-field-activities {
+        margin-top: 2rem;
+      }
+
+        form .form-type-select.form-item-field-activities select {
+          width: 25rem;
+          font-size: 1.0625rem;
+          line-height: 1.5rem;
+        }
+      
+
+
+       /* Draggable items */
+      .story-columns .node-column-sidebar-right .photos img,
+      .story-columns .node-column-sidebar-right .map img,
+      .story-columns .node-column-sidebar-right .field-type-image img,
+      .story-columns .node-column-sidebar-right .field-type-image .form-type-managed-file,
+      .story-columns .node-column-sidebar-right .field-type-link-field,
+      .story-columns .node-column-sidebar-right .embeds iframe,
+      .story-columns .node-column-sidebar-right .embeds video {
+        display: block;
+        margin: 0 0 1rem 0;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border: 2px dashed #ddd; /*#B6DDE9;*/
+        padding: .5rem;
+      }
+        /* Upload image field */
+        .form-file-wrapper {
+          width: 11.75rem;
+          height: 8.5rem;
+        }
+        .story-columns .node-column-sidebar-right .field-type-image table {
+          display: table;
+          margin-top: 0;
+        }
+        .story-columns .node-column-sidebar-right .field-type-image tr {
+          display: table !important;
+          position: relative;
+        }
+          .story-columns .node-column-sidebar-right .field-type-image td:nth-child(3n+3) {
+            display: table-cell;
+            position: absolute;
+            bottom: 2rem;
+            right: 1rem;
+            border-radius: 2px;
+            background-color: #fafafa;
+          }
+
+        /* Video embeds */
+        .story-columns .node-column-sidebar-right .embeds {
+          display: block;
+          width: 100%;
+        }
+
+        .story-columns .node-column-sidebar-right .embeds iframe,
+        .story-columns .node-column-sidebar-right .embeds video {
+          margin: 1rem 0 0 0;
+        }
 
 
   /* Form action buttons*/
@@ -3935,11 +4538,6 @@ div.status.messages {
         padding: .45rem .6rem;
       }
 
-        form input[type=submit]#edit-delete {
-          left: 45.5rem;
-          right: auto;
-        }
-
 
     /* Front page: 'Tell your story' button on sidebar (logged in)*/
     body.front .node-column-sidebar-right .button {
@@ -3956,9 +4554,12 @@ div.status.messages {
    *
    */
 
-    div.status.messages {
-      margin: 2rem 2rem 0 11.5rem;
-    }
+  div.status.messages {
+      margin: 2rem auto 2rem calc((100% - 58rem)/2);
+      max-width: 42rem;
+  }
+
+
 
   /**
    * 16.Custom
@@ -3988,9 +4589,11 @@ div.status.messages {
       max-width: 40rem;
     }
 
-    .comments-wrapper .comment-form-container,
-    .comments-wrapper form.comment-form {
+    .comments-wrapper .comment-form-container {
       width: 35rem;
+    }
+    .comments-wrapper form.comment-form {
+      width: 29rem;
     }
 
 
@@ -4003,14 +4606,83 @@ div.status.messages {
    .view-voters {
       display: block;
    }
-
+    .share-box .rate-widget {
+      display: inline-block;
+    }
     .rate-widget {
       margin-right: 0;
     }
 
 
 }
-@media (min-width:64.063em) { /* big landscape tablets, laptops, and desktops */}
+
+@media (min-width:64.063em) { /* big landscape tablets, laptops, and desktops */
+
+
+
+  /**
+   * 2.LAYOUT
+   */
+
+   /* Sidebar right */
+    .story-columns .node-column-sidebar-right {
+      flex: 0 0 18rem;
+    }
+
+      /* Front page */
+      body.front .story-columns .node-column-sidebar-right {
+        flex: 0 0 21rem;
+      }
+
+
+   /* Story page: Activity data */
+   .story-columns .activity_data p.type {}
+
+    #container .story-columns .activity_data p.distance,
+    #container .story-columns .activity_data p.moving-time,
+    #container .story-columns .activity_data p.elevation {
+        font-size: 1.5rem;
+        line-height: 1.25rem;
+    }
+
+    /* User page layout */
+      body.node-type-story #container .comments-wrapper,
+      body.node-type-story #container .block-views {
+        max-width: 48rem;
+      }
+
+  /**
+   * 11.CSS SUPPORT
+   */
+
+    .field-name-body iframe,
+    .field-name-body video,
+    /* Videos on form */
+    .cke_editable iframe,
+    .cke_editable video {
+        width: calc(100% + 24rem);
+        height: 37rem;
+     }
+
+    .field-name-body #map {
+      height: 500px;
+    }
+      .field-name-body .chart {
+        width: 1000px;
+  }
+
+
+  /**
+   * 14.FORMS
+   */
+
+      /* Sticky Sidebar right */
+      form .story-columns .node-column-sidebar-right.sticky .sidebar-inner-right {
+        width: 17rem;
+      }
+
+
+}
 @media (min-width:80.063em) { /* hi-res laptops and desktops */
 
 
@@ -4020,8 +4692,25 @@ div.status.messages {
    */
 
   .inner {
-      width: 1148px; /*Like Strava*/
+      width: 1148px; /*Like on Strava*/
     }
+
+    body.node-type-story #container .inner {
+      width: 100%;
+    }
+
+    .story-columns {
+      /*margin-left: calc((100% - 1148px)/2);*/
+    }
+
+   /* Sidebar right */
+    .story-columns .node-column-sidebar-right {
+      /*flex: 0 0 calc(100% - 50rem);*/
+    }
+
+
+
+  /* Front page */
 
     body.front .intro-left {
       display: inline-block;
@@ -4059,6 +4748,16 @@ div.status.messages {
       }
 
 
+   /* Story page: Activity data */
+   .story-columns .activity_data p.type {}
+
+    #container .story-columns .activity_data p.distance,
+    #container .story-columns .activity_data p.moving-time,
+    #container .story-columns .activity_data p.elevation {
+        font-size: 1.75rem;
+        line-height: 1.25rem;
+    }
+
   /**
    * 5.HEADER
    */
@@ -4080,6 +4779,19 @@ div.status.messages {
 
 
   /**
+   * 11.CSS SUPPORT
+   */
+
+    .field-name-body iframe,
+    .field-name-body video,
+    /* Videos on form */
+    .cke_editable iframe,
+    .cke_editable video {
+        /*width: calc(100% + 15rem);*/
+     }
+
+
+  /**
    * 12.Views
    *
    */
@@ -4095,6 +4807,56 @@ div.status.messages {
       width: 47.75rem;
       margin-left: 0;
     }
+
+
+  /**
+   * 14.FORMS
+   */
+
+     /* .inner on Form */
+     body.page-node-add-story #container .inner,
+     body.page-node-edit #container .inner {
+        width: auto;
+      }
+
+
+      /* Sidebar right: Sticky */
+      form .story-columns .node-column-sidebar-right.sticky .sidebar-inner-right {
+        width: calc( 100% - ((100% - 1148px)/2 + 50rem)); /* Body - ((Margin left) + main-column width)  */
+      }
+
+     /* Draggable items */
+    .story-columns .node-column-sidebar-right .photos img,
+    .story-columns .node-column-sidebar-right .field-type-image img,
+    .story-columns .node-column-sidebar-right .field-type-link-field,
+    .story-columns .node-column-sidebar-right .embeds iframe {
+      width: auto; /*calc((100% - 2rem)/2);*/
+      height: auto;
+    }
+
+      /* Map */
+      .story-columns .node-column-sidebar-right .map {
+        height: auto;
+        margin-right: 0;
+        max-width: 100%; /*calc(50% - 1rem);*/
+      }
+        .story-columns .node-column-sidebar-right .map img {
+          width: 100%;
+          height: auto;
+          vertical-align: top;
+        }
+      .story-columns .node-column-sidebar-right .field-type-image {
+        max-width: 100%; /*calc(50% - 1rem);*/
+        height: auto;
+        min-height: none;
+        vertical-align: top;
+      }
+        .story-columns .node-column-sidebar-right .field-type-image .form-type-managed-file {
+          width: 13rem;
+          height: auto;
+        }
+
+
 
   /**
    * 16.Custom
